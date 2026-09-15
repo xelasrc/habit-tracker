@@ -9,14 +9,14 @@ export default function Home() {
   const { routines, hydrated } = useRoutines();
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-4 pb-10 sm:p-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Routines</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Routines</h1>
         <Link
           href="/routines/new"
-          className="flex min-h-11 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background"
+          className="flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-accent-foreground shadow-sm transition-transform active:scale-95"
         >
-          New Routine
+          + New Routine
         </Link>
       </div>
 
@@ -27,14 +27,14 @@ export default function Home() {
           action={
             <Link
               href="/routines/new"
-              className="min-h-11 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background"
+              className="flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground shadow-sm"
             >
               Create your first routine
             </Link>
           }
         />
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {routines.map((routine) => (
             <RoutineCard key={routine.id} routine={routine} />
           ))}

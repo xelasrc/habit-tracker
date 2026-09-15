@@ -27,7 +27,7 @@ export function RoutineDetail() {
           action={
             <Link
               href="/"
-              className="min-h-11 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background"
+              className="flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground shadow-sm"
             >
               Back to home
             </Link>
@@ -38,31 +38,46 @@ export function RoutineDetail() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-2">
-        <Link href="/" className="text-sm text-foreground/60">
+        <Link
+          href="/"
+          className="flex min-h-11 w-fit items-center text-sm font-medium text-foreground/60"
+        >
           &larr; Back
         </Link>
-        <h1 className="text-xl font-semibold">{routine.name}</h1>
-        <StreakBadge routine={routine} size="lg" />
+        <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
+        <div>
+          <StreakBadge routine={routine} size="lg" />
+        </div>
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium text-foreground/60">Today</h2>
-        {routine.habits.filter((h) => h.archivedAt === null).length === 0 ? (
-          <EmptyState
-            title="No habits yet"
-            description="Add a habit below to start tracking your streak."
-          />
-        ) : (
-          <HabitChecklist routine={routine} />
-        )}
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
+          Today
+        </h2>
+        <div className="rounded-2xl border border-border bg-surface p-2">
+          {routine.habits.filter((h) => h.archivedAt === null).length === 0 ? (
+            <EmptyState
+              title="No habits yet"
+              description="Add a habit below to start tracking your streak."
+            />
+          ) : (
+            <div className="px-2">
+              <HabitChecklist routine={routine} />
+            </div>
+          )}
+        </div>
         <AddHabitForm routineId={routine.id} />
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium text-foreground/60">History</h2>
-        <HistoryGrid routine={routine} />
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
+          History
+        </h2>
+        <div className="rounded-2xl border border-border bg-surface p-4">
+          <HistoryGrid routine={routine} />
+        </div>
       </div>
 
       <button
@@ -73,7 +88,7 @@ export function RoutineDetail() {
             router.push("/");
           }
         }}
-        className="min-h-11 self-start text-sm text-red-600 dark:text-red-400"
+        className="min-h-11 self-start text-sm font-medium text-danger"
       >
         Delete routine
       </button>

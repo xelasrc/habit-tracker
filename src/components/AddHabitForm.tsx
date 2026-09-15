@@ -21,11 +21,11 @@ export function AddHabitForm({ routineId }: { routineId: string }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Add a habit"
-        className="min-h-11 flex-1 rounded-lg border border-foreground/15 bg-transparent px-3 text-base"
+        className="min-h-11 flex-1 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
       />
       <button
         type="submit"
-        className="min-h-11 rounded-lg bg-foreground px-4 text-sm font-medium text-background disabled:opacity-40"
+        className="min-h-11 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity disabled:opacity-40"
         disabled={!name.trim()}
       >
         Add

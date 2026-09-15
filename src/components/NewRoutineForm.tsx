@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
 
+const inputClass =
+  "min-h-11 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+
 export function NewRoutineForm() {
   const { addRoutine } = useRoutines();
   const router = useRouter();
@@ -39,7 +42,7 @@ export function NewRoutineForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label htmlFor="routine-name" className="text-sm font-medium">
+        <label htmlFor="routine-name" className="text-sm font-medium text-foreground/70">
           Routine name
         </label>
         <input
@@ -48,13 +51,13 @@ export function NewRoutineForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Health and Fitness"
-          className="min-h-11 rounded-lg border border-foreground/15 bg-transparent px-3 text-base"
+          className={inputClass}
           required
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="goal-days" className="text-sm font-medium">
+        <label htmlFor="goal-days" className="text-sm font-medium text-foreground/70">
           Goal (consecutive days)
         </label>
         <input
@@ -63,13 +66,13 @@ export function NewRoutineForm() {
           min={1}
           value={goalDays}
           onChange={(e) => setGoalDays(e.target.value)}
-          className="min-h-11 rounded-lg border border-foreground/15 bg-transparent px-3 text-base"
+          className={inputClass}
           required
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium">Habits</span>
+        <span className="text-sm font-medium text-foreground/70">Habits</span>
         <div className="flex flex-col gap-2">
           {habitNames.map((habitName, index) => (
             <div key={index} className="flex gap-2">
@@ -78,16 +81,23 @@ export function NewRoutineForm() {
                 value={habitName}
                 onChange={(e) => updateHabitName(index, e.target.value)}
                 placeholder="e.g. Workout"
-                className="min-h-11 flex-1 rounded-lg border border-foreground/15 bg-transparent px-3 text-base"
+                className={`flex-1 ${inputClass}`}
               />
               {habitNames.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeHabitRow(index)}
-                  className="min-h-11 px-2 text-sm text-foreground/40"
+                  className="flex size-11 shrink-0 items-center justify-center rounded-lg text-foreground/40 transition-colors active:bg-foreground/10 active:text-danger"
                   aria-label="Remove habit"
                 >
-                  Remove
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path
+                      d="M6 6l12 12M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </button>
               )}
             </div>
@@ -96,7 +106,7 @@ export function NewRoutineForm() {
         <button
           type="button"
           onClick={addHabitRow}
-          className="min-h-11 self-start text-sm font-medium text-foreground/70"
+          className="min-h-11 self-start text-sm font-semibold text-accent"
         >
           + Add another habit
         </button>
@@ -104,7 +114,7 @@ export function NewRoutineForm() {
 
       <button
         type="submit"
-        className="min-h-11 rounded-lg bg-foreground px-4 text-sm font-medium text-background disabled:opacity-40"
+        className="min-h-11 rounded-full bg-accent px-4 text-sm font-medium text-accent-foreground shadow-sm transition-opacity disabled:opacity-40"
         disabled={!name.trim() || !goalDays}
       >
         Create routine
