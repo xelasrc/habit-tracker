@@ -11,7 +11,6 @@ export function NewRoutineForm() {
   const { addRoutine } = useRoutines();
   const router = useRouter();
   const [name, setName] = useState("");
-  const [goalDays, setGoalDays] = useState("30");
   const [habitNames, setHabitNames] = useState<string[]>([""]);
 
   function updateHabitName(index: number, value: string) {
@@ -29,11 +28,9 @@ export function NewRoutineForm() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmedName = name.trim();
-    const goal = Number(goalDays);
-    if (!trimmedName || !Number.isFinite(goal) || goal <= 0) return;
+    if (!trimmedName) return;
     const routineId = addRoutine(
       trimmedName,
-      Math.round(goal),
       habitNames.filter((h) => h.trim())
     );
     router.push(`/routine?id=${routineId}`);
@@ -51,21 +48,6 @@ export function NewRoutineForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Health and Fitness"
-          className={inputClass}
-          required
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="goal-days" className="text-sm font-medium text-foreground/70">
-          Goal (consecutive days)
-        </label>
-        <input
-          id="goal-days"
-          type="number"
-          min={1}
-          value={goalDays}
-          onChange={(e) => setGoalDays(e.target.value)}
           className={inputClass}
           required
         />
@@ -115,7 +97,7 @@ export function NewRoutineForm() {
       <button
         type="submit"
         className="min-h-11 rounded-full bg-accent px-4 text-sm font-medium text-accent-foreground shadow-sm transition-opacity disabled:opacity-40"
-        disabled={!name.trim() || !goalDays}
+        disabled={!name.trim()}
       >
         Create routine
       </button>

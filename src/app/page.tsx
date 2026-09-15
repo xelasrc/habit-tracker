@@ -23,7 +23,7 @@ export default function Home() {
       {!hydrated ? null : routines.length === 0 ? (
         <EmptyState
           title="No routines yet"
-          description="Create a routine like “Health and Fitness”, set a day goal, and add the habits you want to stay consistent with."
+          description="Create a routine like “Health and Fitness” and add the habits you want to stay consistent with."
           action={
             <Link
               href="/routines/new"

@@ -9,7 +9,7 @@ export function StreakBadge({
   size?: "sm" | "md" | "lg";
 }) {
   const streak = computeStreak(routine);
-  const reachedGoal = streak >= routine.goalDays;
+  const onStreak = streak > 0;
 
   const sizeClasses =
     size === "lg"
@@ -23,12 +23,10 @@ export function StreakBadge({
   return (
     <span
       className={`inline-flex shrink-0 items-center tabular-nums ${sizeClasses} ${
-        reachedGoal
-          ? "bg-success/15 text-success"
-          : "bg-foreground/5 text-foreground/80"
+        onStreak ? "bg-success/15 text-success" : "bg-foreground/5 text-foreground/80"
       }`}
     >
-      {reachedGoal && (
+      {onStreak && (
         <svg
           width={iconSize}
           height={iconSize}
@@ -39,7 +37,7 @@ export function StreakBadge({
           <path d="M12 2c1 3-2 4.5-2 7a3 3 0 0 0 6 0c1.5 1.5 2 3.5 2 5a6 6 0 1 1-12 0c0-4 3-7 4-8 1-1 1.5-2.5 2-4Z" />
         </svg>
       )}
-      {streak} / {routine.goalDays}
+      {streak} {streak === 1 ? "day" : "days"}
     </span>
   );
 }

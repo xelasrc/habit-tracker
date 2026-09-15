@@ -14,7 +14,7 @@ import type { Routine } from "@/lib/types";
 interface RoutinesContextValue {
   routines: Routine[];
   hydrated: boolean;
-  addRoutine: (name: string, goalDays: number, initialHabitNames: string[]) => string;
+  addRoutine: (name: string, initialHabitNames: string[]) => string;
   deleteRoutine: (routineId: string) => void;
   addHabit: (routineId: string, name: string) => void;
   archiveHabit: (routineId: string, habitId: string) => void;
@@ -50,7 +50,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     saveStoredData({ version: 1, routines });
   }, [routines, hydrated]);
 
-  function addRoutine(name: string, goalDays: number, initialHabitNames: string[]): string {
+  function addRoutine(name: string, initialHabitNames: string[]): string {
     const routineId = createId();
     const now = todayISO();
     const habits = initialHabitNames
@@ -66,7 +66,6 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     const newRoutine: Routine = {
       id: routineId,
       name: name.trim(),
-      goalDays,
       createdAt: now,
       habits,
     };

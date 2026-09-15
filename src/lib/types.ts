@@ -9,7 +9,6 @@ export interface Habit {
 export interface Routine {
   id: string;
   name: string;
-  goalDays: number; // target streak length; a milestone, not a cap
   createdAt: string;
   habits: Habit[];
 }
