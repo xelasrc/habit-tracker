@@ -9,7 +9,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-10 rounded-t-2xl bg-surface pb-[env(safe-area-inset-bottom)] shadow-lg">
-      <div className="mx-auto flex h-16 max-w-2xl items-center">
+      <div className="mx-auto flex h-24 max-w-2xl items-center">
         <Link
           href="/"
           aria-label="Dashboard"
@@ -17,7 +17,7 @@ export function BottomNav() {
             isDashboard ? "text-accent" : "text-foreground/50"
           }`}
         >
-          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width={30} height={30} viewBox="0 0 24 24" fill="none" aria-hidden>
             <path
               d="M4 11.5 12 4l8 7.5M6 10v9a1 1 0 0 0 1 1h3v-5h4v5h3a1 1 0 0 0 1-1v-9"
               stroke="currentColor"
@@ -32,9 +32,9 @@ export function BottomNav() {
           <Link
             href="/routines/new"
             aria-label="New routine"
-            className="flex size-11 items-center justify-center rounded-full bg-accent text-accent-foreground transition-transform active:scale-95"
+            className="flex size-16 items-center justify-center rounded-full bg-accent text-accent-foreground transition-transform active:scale-95"
           >
-            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" aria-hidden>
+            <svg width={30} height={30} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M12 5v14M5 12h14"
                 stroke="currentColor"
@@ -50,7 +50,7 @@ export function BottomNav() {
           aria-label="Placeholder"
           className="flex flex-1 cursor-not-allowed items-center justify-center text-foreground/30"
         >
-          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width={30} height={30} viewBox="0 0 24 24" fill="none" aria-hidden>
             <circle cx="5" cy="12" r="1.5" fill="currentColor" />
             <circle cx="12" cy="12" r="1.5" fill="currentColor" />
             <circle cx="19" cy="12" r="1.5" fill="currentColor" />
