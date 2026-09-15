@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Routine } from "@/lib/types";
-import { DEFAULT_COLOR, tintBackground, tintBorder } from "@/lib/colors";
+import { DEFAULT_COLOR, tintBorder } from "@/lib/colors";
 import { HabitChecklist } from "./HabitChecklist";
 
 export function RoutineCard({ routine }: { routine: Routine }) {
@@ -9,8 +9,8 @@ export function RoutineCard({ routine }: { routine: Routine }) {
 
   return (
     <div
-      className="rounded-2xl border p-4 shadow-sm"
-      style={{ backgroundColor: tintBackground(color), borderColor: tintBorder(color) }}
+      className="rounded-2xl border bg-surface p-4 shadow-sm"
+      style={{ borderColor: tintBorder(color) }}
     >
       <Link
         href={`/routine?id=${routine.id}`}

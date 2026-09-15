@@ -10,7 +10,7 @@ import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
 import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
-import { DEFAULT_COLOR, tintBackground, tintBorder } from "@/lib/colors";
+import { DEFAULT_COLOR, tintBorder } from "@/lib/colors";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
@@ -81,8 +81,8 @@ export function RoutineDetail() {
             Consistency
           </h2>
           <div
-            className="rounded-2xl border p-4"
-            style={{ backgroundColor: tintBackground(color), borderColor: tintBorder(color) }}
+            className="rounded-2xl border bg-surface p-4"
+            style={{ borderColor: tintBorder(color) }}
           >
             <HabitMap dates={dates} color={color} isDone={(d) => isRoutineDayComplete(routine, d)} />
           </div>
@@ -94,8 +94,8 @@ export function RoutineDetail() {
           Habits
         </h2>
         <div
-          className="rounded-2xl border p-2"
-          style={{ backgroundColor: tintBackground(color), borderColor: tintBorder(color) }}
+          className="rounded-2xl border bg-surface p-2"
+          style={{ borderColor: tintBorder(color) }}
         >
           {routine.habits.length === 0 ? (
             <EmptyState

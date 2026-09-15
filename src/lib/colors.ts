@@ -21,10 +21,6 @@ export function colorForIndex(index: number): string {
   return PALETTE[index % PALETTE.length].value;
 }
 
-export function tintBackground(color: string, amount = 8): string {
-  return `color-mix(in srgb, ${color} ${amount}%, var(--surface))`;
-}
-
 export function tintBorder(color: string, amount = 18): string {
   return `color-mix(in srgb, ${color} ${amount}%, var(--border))`;
 }
