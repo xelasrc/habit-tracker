@@ -1,9 +1,12 @@
 import Link from "next/link";
 import type { Routine } from "@/lib/types";
+import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
 import { HabitChecklist } from "./HabitChecklist";
+import { HabitMap } from "./HabitMap";
 
 export function RoutineCard({ routine }: { routine: Routine }) {
   const hasHabits = routine.habits.length > 0;
+  const dates = lastNDates(MAP_DAYS);
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
@@ -31,9 +34,17 @@ export function RoutineCard({ routine }: { routine: Routine }) {
       </Link>
 
       {hasHabits ? (
-        <div className="mt-3 border-t border-border pt-1">
-          <HabitChecklist routine={routine} showDelete={false} />
-        </div>
+        <>
+          <div className="mt-3 border-t border-border pt-2.5">
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-foreground/40">
+              Consistency
+            </p>
+            <HabitMap dates={dates} isDone={(d) => isRoutineDayComplete(routine, d)} />
+          </div>
+          <div className="mt-1 border-t border-border pt-1">
+            <HabitChecklist routine={routine} showDelete={false} />
+          </div>
+        </>
       ) : (
         <p className="mt-1 text-sm text-foreground/50">No habits yet</p>
       )}

@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRoutines } from "@/context/RoutinesContext";
 import { HabitChecklist } from "@/components/HabitChecklist";
+import { HabitMap } from "@/components/HabitMap";
 import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
+import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
@@ -35,6 +37,8 @@ export function RoutineDetail() {
     );
   }
 
+  const dates = lastNDates(MAP_DAYS);
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-2">
@@ -47,9 +51,20 @@ export function RoutineDetail() {
         <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
       </div>
 
+      {routine.habits.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
+            Consistency
+          </h2>
+          <div className="rounded-2xl border border-border bg-surface p-4">
+            <HabitMap dates={dates} isDone={(d) => isRoutineDayComplete(routine, d)} />
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
-          Today
+          Habits
         </h2>
         <div className="rounded-2xl border border-border bg-surface p-2">
           {routine.habits.length === 0 ? (
