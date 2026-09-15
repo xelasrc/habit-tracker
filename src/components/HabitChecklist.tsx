@@ -5,7 +5,13 @@ import { activeHabits } from "@/lib/streak";
 import type { Routine } from "@/lib/types";
 import { useRoutines } from "@/context/RoutinesContext";
 
-export function HabitChecklist({ routine }: { routine: Routine }) {
+export function HabitChecklist({
+  routine,
+  showArchive = true,
+}: {
+  routine: Routine;
+  showArchive?: boolean;
+}) {
   const { toggleHabitToday, archiveHabit } = useRoutines();
   const today = todayISO();
   const habits = activeHabits(routine, today);
@@ -35,25 +41,27 @@ export function HabitChecklist({ routine }: { routine: Routine }) {
                 {habit.name}
               </span>
             </label>
-            <button
-              type="button"
-              onClick={() => {
-                if (window.confirm(`Archive "${habit.name}"? Past history is kept.`)) {
-                  archiveHabit(routine.id, habit.id);
-                }
-              }}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10 active:text-danger"
-              aria-label={`Archive ${habit.name}`}
-            >
-              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M6 6l12 12M18 6L6 18"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
+            {showArchive && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Archive "${habit.name}"? Past history is kept.`)) {
+                    archiveHabit(routine.id, habit.id);
+                  }
+                }}
+                className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10 active:text-danger"
+                aria-label={`Archive ${habit.name}`}
+              >
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M6 6l12 12M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            )}
           </li>
         );
       })}

@@ -18,7 +18,7 @@ export function RoutineCard({ routine }: { routine: Routine }) {
 
       {hasHabits ? (
         <div className="mt-3 border-t border-border pt-1">
-          <HabitChecklist routine={routine} />
+          <HabitChecklist routine={routine} showArchive={false} />
         </div>
       ) : (
         <p className="mt-1 text-sm text-foreground/50">No habits yet</p>
