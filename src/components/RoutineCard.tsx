@@ -1,17 +1,17 @@
 import Link from "next/link";
 import type { Routine } from "@/lib/types";
-import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
-import { DEFAULT_COLOR } from "@/lib/colors";
+import { DEFAULT_COLOR, tintBackground, tintBorder } from "@/lib/colors";
 import { HabitChecklist } from "./HabitChecklist";
-import { HabitMap } from "./HabitMap";
 
 export function RoutineCard({ routine }: { routine: Routine }) {
   const hasHabits = routine.habits.length > 0;
-  const dates = lastNDates(MAP_DAYS);
   const color = routine.color ?? DEFAULT_COLOR;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+    <div
+      className="rounded-2xl border p-4 shadow-sm"
+      style={{ backgroundColor: tintBackground(color), borderColor: tintBorder(color) }}
+    >
       <Link
         href={`/routine?id=${routine.id}`}
         className="-m-1 flex items-center justify-between gap-3 rounded-lg p-1 transition-colors active:bg-foreground/5 sm:hover:bg-foreground/5"
@@ -43,17 +43,9 @@ export function RoutineCard({ routine }: { routine: Routine }) {
       </Link>
 
       {hasHabits ? (
-        <>
-          <div className="mt-3 border-t border-border pt-2.5">
-            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-foreground/40">
-              Consistency
-            </p>
-            <HabitMap dates={dates} color={color} isDone={(d) => isRoutineDayComplete(routine, d)} />
-          </div>
-          <div className="mt-1 border-t border-border pt-1">
-            <HabitChecklist routine={routine} showActions={false} />
-          </div>
-        </>
+        <div className="mt-3">
+          <HabitChecklist routine={routine} showActions={false} />
+        </div>
       ) : (
         <p className="mt-1 text-sm text-foreground/50">No habits yet</p>
       )}
