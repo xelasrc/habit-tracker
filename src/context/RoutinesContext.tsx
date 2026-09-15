@@ -17,7 +17,7 @@ interface RoutinesContextValue {
   addRoutine: (name: string, initialHabitNames: string[]) => string;
   deleteRoutine: (routineId: string) => void;
   addHabit: (routineId: string, name: string) => void;
-  archiveHabit: (routineId: string, habitId: string) => void;
+  deleteHabit: (routineId: string, habitId: string) => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
 }
@@ -52,21 +52,17 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
 
   function addRoutine(name: string, initialHabitNames: string[]): string {
     const routineId = createId();
-    const now = todayISO();
     const habits = initialHabitNames
       .map((n) => n.trim())
       .filter(Boolean)
       .map((n) => ({
         id: createId(),
         name: n,
-        createdAt: now,
-        archivedAt: null,
         completedDates: [],
       }));
     const newRoutine: Routine = {
       id: routineId,
       name: name.trim(),
-      createdAt: now,
       habits,
     };
     setRoutines((prev) => [...prev, newRoutine]);
@@ -85,33 +81,17 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         r.id === routineId
           ? {
               ...r,
-              habits: [
-                ...r.habits,
-                {
-                  id: createId(),
-                  name: trimmed,
-                  createdAt: todayISO(),
-                  archivedAt: null,
-                  completedDates: [],
-                },
-              ],
+              habits: [...r.habits, { id: createId(), name: trimmed, completedDates: [] }],
             }
           : r
       )
     );
   }
 
-  function archiveHabit(routineId: string, habitId: string) {
+  function deleteHabit(routineId: string, habitId: string) {
     setRoutines((prev) =>
       prev.map((r) =>
-        r.id === routineId
-          ? {
-              ...r,
-              habits: r.habits.map((h) =>
-                h.id === habitId ? { ...h, archivedAt: todayISO() } : h
-              ),
-            }
-          : r
+        r.id === routineId ? { ...r, habits: r.habits.filter((h) => h.id !== habitId) } : r
       )
     );
   }
@@ -151,7 +131,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         addRoutine,
         deleteRoutine,
         addHabit,
-        archiveHabit,
+        deleteHabit,
         toggleHabitToday,
         getRoutine,
       }}

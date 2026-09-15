@@ -1,20 +1,19 @@
 "use client";
 
 import { todayISO } from "@/lib/date";
-import { activeHabits } from "@/lib/streak";
 import type { Routine } from "@/lib/types";
 import { useRoutines } from "@/context/RoutinesContext";
 
 export function HabitChecklist({
   routine,
-  showArchive = true,
+  showDelete = true,
 }: {
   routine: Routine;
-  showArchive?: boolean;
+  showDelete?: boolean;
 }) {
-  const { toggleHabitToday, archiveHabit } = useRoutines();
+  const { toggleHabitToday, deleteHabit } = useRoutines();
   const today = todayISO();
-  const habits = activeHabits(routine, today);
+  const habits = routine.habits;
 
   if (habits.length === 0) return null;
 
@@ -41,16 +40,16 @@ export function HabitChecklist({
                 {habit.name}
               </span>
             </label>
-            {showArchive && (
+            {showDelete && (
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm(`Archive "${habit.name}"? Past history is kept.`)) {
-                    archiveHabit(routine.id, habit.id);
+                  if (window.confirm(`Delete "${habit.name}"?`)) {
+                    deleteHabit(routine.id, habit.id);
                   }
                 }}
                 className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10 active:text-danger"
-                aria-label={`Archive ${habit.name}`}
+                aria-label={`Delete ${habit.name}`}
               >
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path

@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRoutines } from "@/context/RoutinesContext";
-import { StreakBadge } from "@/components/StreakBadge";
 import { HabitChecklist } from "@/components/HabitChecklist";
 import { AddHabitForm } from "@/components/AddHabitForm";
-import { HistoryGrid } from "@/components/HistoryGrid";
 import { EmptyState } from "@/components/EmptyState";
 
 export function RoutineDetail() {
@@ -47,9 +45,6 @@ export function RoutineDetail() {
           &larr; Back
         </Link>
         <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
-        <div>
-          <StreakBadge routine={routine} size="lg" />
-        </div>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -57,10 +52,10 @@ export function RoutineDetail() {
           Today
         </h2>
         <div className="rounded-2xl border border-border bg-surface p-2">
-          {routine.habits.filter((h) => h.archivedAt === null).length === 0 ? (
+          {routine.habits.length === 0 ? (
             <EmptyState
               title="No habits yet"
-              description="Add a habit below to start tracking your streak."
+              description="Add a habit below to get started."
             />
           ) : (
             <div className="px-2">
@@ -71,19 +66,10 @@ export function RoutineDetail() {
         <AddHabitForm routineId={routine.id} />
       </div>
 
-      <div className="flex flex-col gap-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
-          History
-        </h2>
-        <div className="rounded-2xl border border-border bg-surface p-4">
-          <HistoryGrid routine={routine} />
-        </div>
-      </div>
-
       <button
         type="button"
         onClick={() => {
-          if (window.confirm(`Delete "${routine.name}" and all its history? This can't be undone.`)) {
+          if (window.confirm(`Delete "${routine.name}"? This can't be undone.`)) {
             deleteRoutine(routine.id);
             router.push("/");
           }

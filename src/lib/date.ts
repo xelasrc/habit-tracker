@@ -5,13 +5,6 @@ export function toLocalISODate(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export function addDaysISO(dateISO: string, delta: number): string {
-  const [y, m, d] = dateISO.split("-").map(Number);
-  const dt = new Date(y, m - 1, d);
-  dt.setDate(dt.getDate() + delta);
-  return toLocalISODate(dt);
-}
-
 export function todayISO(): string {
   return toLocalISODate(new Date());
 }
