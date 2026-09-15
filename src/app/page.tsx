@@ -9,7 +9,7 @@ export default function Home() {
   const { routines, hydrated } = useRoutines();
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-4 pb-24 sm:p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-4 sm:p-6">
       <h1 className="text-2xl font-semibold tracking-tight">Routines</h1>
 
       {!hydrated ? null : routines.length === 0 ? (
@@ -32,16 +32,6 @@ export default function Home() {
           ))}
         </div>
       )}
-
-      <Link
-        href="/routines/new"
-        aria-label="New routine"
-        className="fixed right-6 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] flex size-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg transition-transform active:scale-95"
-      >
-        <svg width={26} height={26} viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" />
-        </svg>
-      </Link>
     </div>
   );
 }
