@@ -11,7 +11,7 @@ export function HabitChecklist({
   if (routine.habits.length === 0) return null;
 
   return (
-    <div className="flex flex-col divide-y divide-border">
+    <div className="flex flex-col gap-2">
       {routine.habits.map((habit) => (
         <HabitRow key={habit.id} routineId={routine.id} habit={habit} showActions={showActions} />
       ))}

@@ -25,14 +25,36 @@ export function HabitRow({
   const dates = lastNDates(MAP_DAYS);
   const color = habit.color ?? DEFAULT_COLOR;
 
+  function handleToggle() {
+    toggleHabitToday(routineId, habit.id);
+  }
+
   return (
-    <div className="flex flex-col gap-2 py-3">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleToggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleToggle();
+        }
+      }}
+      aria-pressed={checked}
+      aria-label={
+        checked ? `Mark ${habit.name} as not done today` : `Mark ${habit.name} as done today`
+      }
+      className="flex cursor-pointer flex-col gap-2 rounded-xl bg-foreground/4 p-3 transition-colors active:bg-foreground/8"
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-1.5">
           {showActions && (
             <button
               type="button"
-              onClick={() => setPickerOpen((o) => !o)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setPickerOpen((o) => !o);
+              }}
               style={{ backgroundColor: color }}
               className="size-3.5 shrink-0 rounded-full"
               aria-label={`Change color for ${habit.name}`}
@@ -42,7 +64,8 @@ export function HabitRow({
           {showActions && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 if (window.confirm(`Delete "${habit.name}"?`)) {
                   deleteHabit(routineId, habit.id);
                 }
@@ -61,14 +84,8 @@ export function HabitRow({
             </button>
           )}
         </div>
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={checked}
-          aria-label={
-            checked ? `Mark ${habit.name} as not done today` : `Mark ${habit.name} as done today`
-          }
-          onClick={() => toggleHabitToday(routineId, habit.id)}
+        <div
+          aria-hidden
           style={{
             borderColor: color,
             backgroundColor: checked ? color : "transparent",
@@ -76,7 +93,7 @@ export function HabitRow({
           }}
           className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors"
         >
-          <svg width={11} height={11} viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width={11} height={11} viewBox="0 0 24 24" fill="none">
             {checked ? (
               <path
                 d="M5 13l4 4L19 7"
@@ -94,18 +111,20 @@ export function HabitRow({
               />
             )}
           </svg>
-        </button>
+        </div>
       </div>
 
       {pickerOpen && (
-        <ColorSwatchPicker
-          value={color}
-          size="sm"
-          onChange={(c) => {
-            setHabitColor(routineId, habit.id, c);
-            setPickerOpen(false);
-          }}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ColorSwatchPicker
+            value={color}
+            size="sm"
+            onChange={(c) => {
+              setHabitColor(routineId, habit.id, c);
+              setPickerOpen(false);
+            }}
+          />
+        </div>
       )}
 
       <HabitMap dates={dates} color={color} isDone={(d) => habit.completedDates.includes(d)} />
