@@ -8,9 +8,12 @@ function emptyData(): StoredData {
 }
 
 function migrate(parsed: unknown): StoredData {
-  const obj = parsed as { version?: number } | null;
-  if (obj?.version === CURRENT_VERSION) return parsed as StoredData;
-  // No prior versions exist yet; future migrations get a branch here keyed on obj.version.
+  const obj = parsed as { version?: number; routines?: unknown } | null;
+  if (obj?.version === CURRENT_VERSION && Array.isArray(obj.routines)) {
+    return obj as StoredData;
+  }
+  // Unrecognized or stale shape (wrong version, or missing/renamed fields
+  // from an earlier build) — fail safe to empty rather than crash the app.
   return emptyData();
 }
 
