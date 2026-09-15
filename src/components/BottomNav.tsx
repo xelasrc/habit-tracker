@@ -18,7 +18,7 @@ export function BottomNav() {
   const isDashboard = pathname === "/";
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-10 rounded-t-2xl border-t border-border bg-surface pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-10 rounded-full bg-surface shadow-lg">
       <div className="mx-auto flex h-16 max-w-2xl items-center">
         <Link
           href="/"
