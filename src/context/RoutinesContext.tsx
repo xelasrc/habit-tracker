@@ -9,20 +9,20 @@ import {
 } from "react";
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
-import type { HabitGroup } from "@/lib/types";
+import type { Routine } from "@/lib/types";
 
-interface HabitsContextValue {
-  groups: HabitGroup[];
+interface RoutinesContextValue {
+  routines: Routine[];
   hydrated: boolean;
-  addGroup: (name: string, goalDays: number, initialHabitNames: string[]) => string;
-  deleteGroup: (groupId: string) => void;
-  addHabit: (groupId: string, name: string) => void;
-  archiveHabit: (groupId: string, habitId: string) => void;
-  toggleHabitToday: (groupId: string, habitId: string) => void;
-  getGroup: (groupId: string) => HabitGroup | undefined;
+  addRoutine: (name: string, goalDays: number, initialHabitNames: string[]) => string;
+  deleteRoutine: (routineId: string) => void;
+  addHabit: (routineId: string, name: string) => void;
+  archiveHabit: (routineId: string, habitId: string) => void;
+  toggleHabitToday: (routineId: string, habitId: string) => void;
+  getRoutine: (routineId: string) => Routine | undefined;
 }
 
-const HabitsContext = createContext<HabitsContextValue | null>(null);
+const RoutinesContext = createContext<RoutinesContextValue | null>(null);
 
 function createId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -31,8 +31,8 @@ function createId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function HabitsProvider({ children }: { children: ReactNode }) {
-  const [groups, setGroups] = useState<HabitGroup[]>([]);
+export function RoutinesProvider({ children }: { children: ReactNode }) {
+  const [routines, setRoutines] = useState<Routine[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -41,17 +41,17 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     // between the server-rendered empty state and the client's real data.
     const data = loadStoredData();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGroups(data.groups);
+    setRoutines(data.routines);
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!hydrated) return;
-    saveStoredData({ version: 1, groups });
-  }, [groups, hydrated]);
+    saveStoredData({ version: 1, routines });
+  }, [routines, hydrated]);
 
-  function addGroup(name: string, goalDays: number, initialHabitNames: string[]): string {
-    const groupId = createId();
+  function addRoutine(name: string, goalDays: number, initialHabitNames: string[]): string {
+    const routineId = createId();
     const now = todayISO();
     const habits = initialHabitNames
       .map((n) => n.trim())
@@ -63,31 +63,31 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         archivedAt: null,
         completedDates: [],
       }));
-    const newGroup: HabitGroup = {
-      id: groupId,
+    const newRoutine: Routine = {
+      id: routineId,
       name: name.trim(),
       goalDays,
       createdAt: now,
       habits,
     };
-    setGroups((prev) => [...prev, newGroup]);
-    return groupId;
+    setRoutines((prev) => [...prev, newRoutine]);
+    return routineId;
   }
 
-  function deleteGroup(groupId: string) {
-    setGroups((prev) => prev.filter((g) => g.id !== groupId));
+  function deleteRoutine(routineId: string) {
+    setRoutines((prev) => prev.filter((r) => r.id !== routineId));
   }
 
-  function addHabit(groupId: string, name: string) {
+  function addHabit(routineId: string, name: string) {
     const trimmed = name.trim();
     if (!trimmed) return;
-    setGroups((prev) =>
-      prev.map((g) =>
-        g.id === groupId
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
           ? {
-              ...g,
+              ...r,
               habits: [
-                ...g.habits,
+                ...r.habits,
                 {
                   id: createId(),
                   name: trimmed,
@@ -97,34 +97,34 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
                 },
               ],
             }
-          : g
+          : r
       )
     );
   }
 
-  function archiveHabit(groupId: string, habitId: string) {
-    setGroups((prev) =>
-      prev.map((g) =>
-        g.id === groupId
+  function archiveHabit(routineId: string, habitId: string) {
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
           ? {
-              ...g,
-              habits: g.habits.map((h) =>
+              ...r,
+              habits: r.habits.map((h) =>
                 h.id === habitId ? { ...h, archivedAt: todayISO() } : h
               ),
             }
-          : g
+          : r
       )
     );
   }
 
-  function toggleHabitToday(groupId: string, habitId: string) {
+  function toggleHabitToday(routineId: string, habitId: string) {
     const today = todayISO();
-    setGroups((prev) =>
-      prev.map((g) =>
-        g.id === groupId
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
           ? {
-              ...g,
-              habits: g.habits.map((h) => {
+              ...r,
+              habits: r.habits.map((h) => {
                 if (h.id !== habitId) return h;
                 const has = h.completedDates.includes(today);
                 return {
@@ -135,35 +135,35 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
                 };
               }),
             }
-          : g
+          : r
       )
     );
   }
 
-  function getGroup(groupId: string): HabitGroup | undefined {
-    return groups.find((g) => g.id === groupId);
+  function getRoutine(routineId: string): Routine | undefined {
+    return routines.find((r) => r.id === routineId);
   }
 
   return (
-    <HabitsContext.Provider
+    <RoutinesContext.Provider
       value={{
-        groups,
+        routines,
         hydrated,
-        addGroup,
-        deleteGroup,
+        addRoutine,
+        deleteRoutine,
         addHabit,
         archiveHabit,
         toggleHabitToday,
-        getGroup,
+        getRoutine,
       }}
     >
       {children}
-    </HabitsContext.Provider>
+    </RoutinesContext.Provider>
   );
 }
 
-export function useHabits(): HabitsContextValue {
-  const ctx = useContext(HabitsContext);
-  if (!ctx) throw new Error("useHabits must be used within a HabitsProvider");
+export function useRoutines(): RoutinesContextValue {
+  const ctx = useContext(RoutinesContext);
+  if (!ctx) throw new Error("useRoutines must be used within a RoutinesProvider");
   return ctx;
 }

@@ -1,15 +1,15 @@
-import type { HabitGroup } from "@/lib/types";
+import type { Routine } from "@/lib/types";
 import { computeStreak } from "@/lib/streak";
 
 export function StreakBadge({
-  group,
+  routine,
   size = "md",
 }: {
-  group: HabitGroup;
+  routine: Routine;
   size?: "sm" | "md" | "lg";
 }) {
-  const streak = computeStreak(group);
-  const reachedGoal = streak >= group.goalDays;
+  const streak = computeStreak(routine);
+  const reachedGoal = streak >= routine.goalDays;
 
   const sizeClasses =
     size === "lg"
@@ -22,7 +22,7 @@ export function StreakBadge({
     <span
       className={`${sizeClasses} ${reachedGoal ? "text-emerald-600 dark:text-emerald-400" : ""}`}
     >
-      {streak} / {group.goalDays} days
+      {streak} / {routine.goalDays} days
     </span>
   );
 }

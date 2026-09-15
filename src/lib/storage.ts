@@ -4,7 +4,7 @@ const STORAGE_KEY = "habit-tracker:data";
 const CURRENT_VERSION = 1 as const;
 
 function emptyData(): StoredData {
-  return { version: CURRENT_VERSION, groups: [] };
+  return { version: CURRENT_VERSION, routines: [] };
 }
 
 function migrate(parsed: unknown): StoredData {

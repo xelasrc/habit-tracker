@@ -2,13 +2,13 @@
 
 import { todayISO } from "@/lib/date";
 import { activeHabits } from "@/lib/streak";
-import type { HabitGroup } from "@/lib/types";
-import { useHabits } from "@/context/HabitsContext";
+import type { Routine } from "@/lib/types";
+import { useRoutines } from "@/context/RoutinesContext";
 
-export function HabitChecklist({ group }: { group: HabitGroup }) {
-  const { toggleHabitToday, archiveHabit } = useHabits();
+export function HabitChecklist({ routine }: { routine: Routine }) {
+  const { toggleHabitToday, archiveHabit } = useRoutines();
   const today = todayISO();
-  const habits = activeHabits(group, today);
+  const habits = activeHabits(routine, today);
 
   if (habits.length === 0) return null;
 
@@ -22,7 +22,7 @@ export function HabitChecklist({ group }: { group: HabitGroup }) {
               <input
                 type="checkbox"
                 checked={checked}
-                onChange={() => toggleHabitToday(group.id, habit.id)}
+                onChange={() => toggleHabitToday(routine.id, habit.id)}
                 className="size-6 shrink-0 accent-foreground"
               />
               <span className={checked ? "text-foreground/50 line-through" : ""}>
@@ -33,7 +33,7 @@ export function HabitChecklist({ group }: { group: HabitGroup }) {
               type="button"
               onClick={() => {
                 if (window.confirm(`Archive "${habit.name}"? Past history is kept.`)) {
-                  archiveHabit(group.id, habit.id);
+                  archiveHabit(routine.id, habit.id);
                 }
               }}
               className="min-h-11 px-2 text-sm text-foreground/40"

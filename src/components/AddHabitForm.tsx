@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useHabits } from "@/context/HabitsContext";
+import { useRoutines } from "@/context/RoutinesContext";
 
-export function AddHabitForm({ groupId }: { groupId: string }) {
-  const { addHabit } = useHabits();
+export function AddHabitForm({ routineId }: { routineId: string }) {
+  const { addHabit } = useRoutines();
   const [name, setName] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    addHabit(groupId, name);
+    addHabit(routineId, name);
     setName("");
   }
 

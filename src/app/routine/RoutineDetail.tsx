@@ -2,28 +2,28 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useHabits } from "@/context/HabitsContext";
+import { useRoutines } from "@/context/RoutinesContext";
 import { StreakBadge } from "@/components/StreakBadge";
 import { HabitChecklist } from "@/components/HabitChecklist";
 import { AddHabitForm } from "@/components/AddHabitForm";
 import { HistoryGrid } from "@/components/HistoryGrid";
 import { EmptyState } from "@/components/EmptyState";
 
-export function GroupDetail() {
+export function RoutineDetail() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { getGroup, deleteGroup, hydrated } = useHabits();
+  const { getRoutine, deleteRoutine, hydrated } = useRoutines();
   const id = searchParams.get("id");
-  const group = id ? getGroup(id) : undefined;
+  const routine = id ? getRoutine(id) : undefined;
 
   if (!hydrated) return null;
 
-  if (!group) {
+  if (!routine) {
     return (
       <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4 sm:p-6">
         <EmptyState
-          title="Group not found"
-          description="This habit group doesn't exist or may have been deleted."
+          title="Routine not found"
+          description="This routine doesn't exist or may have been deleted."
           action={
             <Link
               href="/"
@@ -43,39 +43,39 @@ export function GroupDetail() {
         <Link href="/" className="text-sm text-foreground/60">
           &larr; Back
         </Link>
-        <h1 className="text-xl font-semibold">{group.name}</h1>
-        <StreakBadge group={group} size="lg" />
+        <h1 className="text-xl font-semibold">{routine.name}</h1>
+        <StreakBadge routine={routine} size="lg" />
       </div>
 
       <div className="flex flex-col gap-3">
         <h2 className="text-sm font-medium text-foreground/60">Today</h2>
-        {group.habits.filter((h) => h.archivedAt === null).length === 0 ? (
+        {routine.habits.filter((h) => h.archivedAt === null).length === 0 ? (
           <EmptyState
             title="No habits yet"
             description="Add a habit below to start tracking your streak."
           />
         ) : (
-          <HabitChecklist group={group} />
+          <HabitChecklist routine={routine} />
         )}
-        <AddHabitForm groupId={group.id} />
+        <AddHabitForm routineId={routine.id} />
       </div>
 
       <div className="flex flex-col gap-3">
         <h2 className="text-sm font-medium text-foreground/60">History</h2>
-        <HistoryGrid group={group} />
+        <HistoryGrid routine={routine} />
       </div>
 
       <button
         type="button"
         onClick={() => {
-          if (window.confirm(`Delete "${group.name}" and all its history? This can't be undone.`)) {
-            deleteGroup(group.id);
+          if (window.confirm(`Delete "${routine.name}" and all its history? This can't be undone.`)) {
+            deleteRoutine(routine.id);
             router.push("/");
           }
         }}
         className="min-h-11 self-start text-sm text-red-600 dark:text-red-400"
       >
-        Delete group
+        Delete routine
       </button>
     </div>
   );

@@ -6,7 +6,7 @@ export interface Habit {
   completedDates: string[]; // local "YYYY-MM-DD" dates this habit was ticked
 }
 
-export interface HabitGroup {
+export interface Routine {
   id: string;
   name: string;
   goalDays: number; // target streak length; a milestone, not a cap
@@ -16,5 +16,5 @@ export interface HabitGroup {
 
 export interface StoredData {
   version: 1;
-  groups: HabitGroup[];
+  routines: Routine[];
 }

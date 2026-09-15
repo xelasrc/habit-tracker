@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { HabitsProvider } from "@/context/HabitsContext";
+import { RoutinesProvider } from "@/context/RoutinesContext";
 
 export function Providers({ children }: { children: ReactNode }) {
-  return <HabitsProvider>{children}</HabitsProvider>;
+  return <RoutinesProvider>{children}</RoutinesProvider>;
 }

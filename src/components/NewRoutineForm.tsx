@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useHabits } from "@/context/HabitsContext";
+import { useRoutines } from "@/context/RoutinesContext";
 
-export function NewGroupForm() {
-  const { addGroup } = useHabits();
+export function NewRoutineForm() {
+  const { addRoutine } = useRoutines();
   const router = useRouter();
   const [name, setName] = useState("");
   const [goalDays, setGoalDays] = useState("30");
@@ -28,22 +28,22 @@ export function NewGroupForm() {
     const trimmedName = name.trim();
     const goal = Number(goalDays);
     if (!trimmedName || !Number.isFinite(goal) || goal <= 0) return;
-    const groupId = addGroup(
+    const routineId = addRoutine(
       trimmedName,
       Math.round(goal),
       habitNames.filter((h) => h.trim())
     );
-    router.push(`/group?id=${groupId}`);
+    router.push(`/routine?id=${routineId}`);
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label htmlFor="group-name" className="text-sm font-medium">
-          Group name
+        <label htmlFor="routine-name" className="text-sm font-medium">
+          Routine name
         </label>
         <input
-          id="group-name"
+          id="routine-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -107,7 +107,7 @@ export function NewGroupForm() {
         className="min-h-11 rounded-lg bg-foreground px-4 text-sm font-medium text-background disabled:opacity-40"
         disabled={!name.trim() || !goalDays}
       >
-        Create group
+        Create routine
       </button>
     </form>
   );
