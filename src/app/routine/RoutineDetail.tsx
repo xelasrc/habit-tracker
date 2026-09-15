@@ -108,7 +108,7 @@ export function RoutineDetail() {
             </div>
           )}
         </div>
-        <AddHabitForm routineId={routine.id} existingHabitCount={routine.habits.length} />
+        <AddHabitForm routineId={routine.id} defaultColor={color} />
       </div>
 
       <button

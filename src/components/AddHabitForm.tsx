@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
-import { colorForIndex } from "@/lib/colors";
 import { ColorSwatchPicker } from "./ColorSwatchPicker";
 
 export function AddHabitForm({
   routineId,
-  existingHabitCount,
+  defaultColor,
 }: {
   routineId: string;
-  existingHabitCount: number;
+  defaultColor: string;
 }) {
   const { addHabit } = useRoutines();
   const [name, setName] = useState("");
-  const [color, setColor] = useState(colorForIndex(existingHabitCount));
+  const [color, setColor] = useState(defaultColor);
   const [pickerOpen, setPickerOpen] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
@@ -22,7 +21,7 @@ export function AddHabitForm({
     if (!name.trim()) return;
     addHabit(routineId, name, color);
     setName("");
-    setColor(colorForIndex(existingHabitCount + 1));
+    setColor(defaultColor);
     setPickerOpen(false);
   }
 

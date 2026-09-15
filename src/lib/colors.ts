@@ -17,10 +17,6 @@ export const PALETTE: PaletteColor[] = [
 
 export const DEFAULT_COLOR = PALETTE[0].value;
 
-export function colorForIndex(index: number): string {
-  return PALETTE[index % PALETTE.length].value;
-}
-
 export function tintBorder(color: string, amount = 18): string {
   return `color-mix(in srgb, ${color} ${amount}%, var(--border))`;
 }

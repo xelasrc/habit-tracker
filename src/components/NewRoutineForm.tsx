@@ -102,7 +102,7 @@ export function NewRoutineForm() {
           + Add another habit
         </button>
         <p className="text-xs text-foreground/40">
-          Each habit gets its own color automatically — you can change it later.
+          Habits default to the routine&apos;s color — you can change any of them later.
         </p>
       </div>
 

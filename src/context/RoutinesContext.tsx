@@ -9,7 +9,6 @@ import {
 } from "react";
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
-import { colorForIndex } from "@/lib/colors";
 import type { Routine } from "@/lib/types";
 
 interface RoutinesContextValue {
@@ -58,10 +57,10 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     const habits = initialHabitNames
       .map((n) => n.trim())
       .filter(Boolean)
-      .map((n, i) => ({
+      .map((n) => ({
         id: createId(),
         name: n,
-        color: colorForIndex(i),
+        color,
         completedDates: [],
       }));
     const newRoutine: Routine = {
