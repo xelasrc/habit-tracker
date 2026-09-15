@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
+import { DEFAULT_COLOR } from "@/lib/colors";
+import { ColorSwatchPicker } from "./ColorSwatchPicker";
 
 const inputClass =
   "min-h-11 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
@@ -11,6 +13,7 @@ export function NewRoutineForm() {
   const { addRoutine } = useRoutines();
   const router = useRouter();
   const [name, setName] = useState("");
+  const [color, setColor] = useState(DEFAULT_COLOR);
   const [habitNames, setHabitNames] = useState<string[]>([""]);
 
   function updateHabitName(index: number, value: string) {
@@ -31,6 +34,7 @@ export function NewRoutineForm() {
     if (!trimmedName) return;
     const routineId = addRoutine(
       trimmedName,
+      color,
       habitNames.filter((h) => h.trim())
     );
     router.push(`/routine?id=${routineId}`);
@@ -51,6 +55,11 @@ export function NewRoutineForm() {
           className={inputClass}
           required
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-foreground/70">Color</span>
+        <ColorSwatchPicker value={color} onChange={setColor} />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -92,6 +101,9 @@ export function NewRoutineForm() {
         >
           + Add another habit
         </button>
+        <p className="text-xs text-foreground/40">
+          Each habit gets its own color automatically — you can change it later.
+        </p>
       </div>
 
       <button

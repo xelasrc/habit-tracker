@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRoutines } from "@/context/RoutinesContext";
@@ -7,12 +8,15 @@ import { HabitChecklist } from "@/components/HabitChecklist";
 import { HabitMap } from "@/components/HabitMap";
 import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
+import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
+import { DEFAULT_COLOR } from "@/lib/colors";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { getRoutine, deleteRoutine, hydrated } = useRoutines();
+  const { getRoutine, deleteRoutine, setRoutineColor, hydrated } = useRoutines();
+  const [pickerOpen, setPickerOpen] = useState(false);
   const id = searchParams.get("id");
   const routine = id ? getRoutine(id) : undefined;
 
@@ -38,6 +42,7 @@ export function RoutineDetail() {
   }
 
   const dates = lastNDates(MAP_DAYS);
+  const color = routine.color ?? DEFAULT_COLOR;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 p-4 pb-10 sm:p-6">
@@ -48,7 +53,26 @@ export function RoutineDetail() {
         >
           &larr; Back
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPickerOpen((o) => !o)}
+            style={{ backgroundColor: color }}
+            className="size-4 shrink-0 rounded-full"
+            aria-label="Change routine color"
+          />
+          <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
+        </div>
+        {pickerOpen && (
+          <ColorSwatchPicker
+            value={color}
+            size="sm"
+            onChange={(c) => {
+              setRoutineColor(routine.id, c);
+              setPickerOpen(false);
+            }}
+          />
+        )}
       </div>
 
       {routine.habits.length > 0 && (
@@ -57,7 +81,7 @@ export function RoutineDetail() {
             Consistency
           </h2>
           <div className="rounded-2xl border border-border bg-surface p-4">
-            <HabitMap dates={dates} isDone={(d) => isRoutineDayComplete(routine, d)} />
+            <HabitMap dates={dates} color={color} isDone={(d) => isRoutineDayComplete(routine, d)} />
           </div>
         </div>
       )}
@@ -78,7 +102,7 @@ export function RoutineDetail() {
             </div>
           )}
         </div>
-        <AddHabitForm routineId={routine.id} />
+        <AddHabitForm routineId={routine.id} existingHabitCount={routine.habits.length} />
       </div>
 
       <button

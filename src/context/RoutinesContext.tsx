@@ -9,15 +9,18 @@ import {
 } from "react";
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
+import { colorForIndex } from "@/lib/colors";
 import type { Routine } from "@/lib/types";
 
 interface RoutinesContextValue {
   routines: Routine[];
   hydrated: boolean;
-  addRoutine: (name: string, initialHabitNames: string[]) => string;
+  addRoutine: (name: string, color: string, initialHabitNames: string[]) => string;
   deleteRoutine: (routineId: string) => void;
-  addHabit: (routineId: string, name: string) => void;
+  setRoutineColor: (routineId: string, color: string) => void;
+  addHabit: (routineId: string, name: string, color: string) => void;
   deleteHabit: (routineId: string, habitId: string) => void;
+  setHabitColor: (routineId: string, habitId: string, color: string) => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
 }
@@ -50,19 +53,21 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     saveStoredData({ version: 1, routines });
   }, [routines, hydrated]);
 
-  function addRoutine(name: string, initialHabitNames: string[]): string {
+  function addRoutine(name: string, color: string, initialHabitNames: string[]): string {
     const routineId = createId();
     const habits = initialHabitNames
       .map((n) => n.trim())
       .filter(Boolean)
-      .map((n) => ({
+      .map((n, i) => ({
         id: createId(),
         name: n,
+        color: colorForIndex(i),
         completedDates: [],
       }));
     const newRoutine: Routine = {
       id: routineId,
       name: name.trim(),
+      color,
       habits,
     };
     setRoutines((prev) => [...prev, newRoutine]);
@@ -73,7 +78,11 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     setRoutines((prev) => prev.filter((r) => r.id !== routineId));
   }
 
-  function addHabit(routineId: string, name: string) {
+  function setRoutineColor(routineId: string, color: string) {
+    setRoutines((prev) => prev.map((r) => (r.id === routineId ? { ...r, color } : r)));
+  }
+
+  function addHabit(routineId: string, name: string, color: string) {
     const trimmed = name.trim();
     if (!trimmed) return;
     setRoutines((prev) =>
@@ -81,7 +90,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         r.id === routineId
           ? {
               ...r,
-              habits: [...r.habits, { id: createId(), name: trimmed, completedDates: [] }],
+              habits: [...r.habits, { id: createId(), name: trimmed, color, completedDates: [] }],
             }
           : r
       )
@@ -92,6 +101,16 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     setRoutines((prev) =>
       prev.map((r) =>
         r.id === routineId ? { ...r, habits: r.habits.filter((h) => h.id !== habitId) } : r
+      )
+    );
+  }
+
+  function setHabitColor(routineId: string, habitId: string, color: string) {
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
+          ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, color } : h)) }
+          : r
       )
     );
   }
@@ -130,8 +149,10 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         hydrated,
         addRoutine,
         deleteRoutine,
+        setRoutineColor,
         addHabit,
         deleteHabit,
+        setHabitColor,
         toggleHabitToday,
         getRoutine,
       }}
