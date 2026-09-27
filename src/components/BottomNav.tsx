@@ -28,23 +28,6 @@ export function BottomNav() {
           </svg>
         </Link>
 
-        <div className="flex flex-1 items-center justify-center">
-          <Link
-            href="/routines/new"
-            aria-label="New routine"
-            className="flex size-16 items-center justify-center rounded-full bg-accent text-accent-foreground transition-transform active:scale-95"
-          >
-            <svg width={30} height={30} viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                strokeLinecap="round"
-              />
-            </svg>
-          </Link>
-        </div>
-
         <div
           aria-disabled="true"
           aria-label="Placeholder"
