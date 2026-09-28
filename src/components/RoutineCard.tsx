@@ -3,7 +3,13 @@ import type { Routine } from "@/lib/types";
 import { DEFAULT_COLOR, tintBorder } from "@/lib/colors";
 import { HabitChecklist } from "./HabitChecklist";
 
-export function RoutineCard({ routine }: { routine: Routine }) {
+export function RoutineCard({
+  routine,
+  compact = false,
+}: {
+  routine: Routine;
+  compact?: boolean;
+}) {
   const hasHabits = routine.habits.length > 0;
   const color = routine.color ?? DEFAULT_COLOR;
 
@@ -44,7 +50,7 @@ export function RoutineCard({ routine }: { routine: Routine }) {
 
       {hasHabits ? (
         <div className="mt-3">
-          <HabitChecklist routine={routine} showActions={false} />
+          <HabitChecklist routine={routine} showActions={false} compact={compact} />
         </div>
       ) : (
         <p className="mt-1 text-sm text-foreground/50">No habits yet</p>

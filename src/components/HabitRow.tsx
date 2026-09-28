@@ -13,10 +13,12 @@ export function HabitRow({
   routineId,
   habit,
   showActions = true,
+  compact = false,
 }: {
   routineId: string;
   habit: Habit;
   showActions?: boolean;
+  compact?: boolean;
 }) {
   const { toggleHabitToday, deleteHabit, setHabitColor } = useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -44,7 +46,9 @@ export function HabitRow({
       aria-label={
         checked ? `Mark ${habit.name} as not done today` : `Mark ${habit.name} as done today`
       }
-      className="flex cursor-pointer flex-col gap-2 rounded-xl bg-foreground/4 p-3 transition-colors active:bg-foreground/8"
+      className={`flex cursor-pointer flex-col gap-2 rounded-xl bg-foreground/4 transition-colors active:bg-foreground/8 ${
+        compact ? "p-2.5" : "p-3"
+      }`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-1.5">
@@ -127,7 +131,9 @@ export function HabitRow({
         </div>
       )}
 
-      <HabitMap dates={dates} color={color} isDone={(d) => habit.completedDates.includes(d)} />
+      {!compact && (
+        <HabitMap dates={dates} color={color} isDone={(d) => habit.completedDates.includes(d)} />
+      )}
     </div>
   );
 }
