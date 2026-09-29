@@ -53,6 +53,20 @@ export default function Home() {
             </button>
           </div>
           <Link
+            href="/stats"
+            aria-label="Stats"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50"
+          >
+            <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M4 20V10M11 20V4M18 20v-6"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+              />
+            </svg>
+          </Link>
+          <Link
             href="/settings"
             aria-label="Settings"
             className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50"
