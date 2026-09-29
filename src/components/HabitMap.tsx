@@ -2,10 +2,12 @@ export function HabitMap({
   dates,
   isDone,
   color,
+  onToggle,
 }: {
   dates: string[];
   isDone: (date: string) => boolean;
   color: string;
+  onToggle?: (date: string) => void;
 }) {
   const today = dates[dates.length - 1];
 
@@ -14,14 +16,27 @@ export function HabitMap({
       {dates.map((date) => {
         const done = isDone(date);
         const isToday = date === today;
+        const className = `aspect-square rounded-xs ${done ? "" : "bg-foreground/8"} ${
+          isToday ? "ring-1 ring-inset ring-foreground/50" : ""
+        }`;
+        const style = done ? { backgroundColor: color } : undefined;
+
+        if (!onToggle) {
+          return <div key={date} title={date} style={style} className={className} />;
+        }
+
         return (
-          <div
+          <button
             key={date}
+            type="button"
             title={date}
-            style={done ? { backgroundColor: color } : undefined}
-            className={`aspect-square rounded-xs ${done ? "" : "bg-foreground/8"} ${
-              isToday ? "ring-1 ring-inset ring-foreground/50" : ""
-            }`}
+            aria-label={`${done ? "Unmark" : "Mark"} ${date}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(date);
+            }}
+            style={style}
+            className={className}
           />
         );
       })}

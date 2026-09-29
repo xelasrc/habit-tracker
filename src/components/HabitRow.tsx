@@ -24,7 +24,7 @@ export function HabitRow({
   isFirst?: boolean;
   isLast?: boolean;
 }) {
-  const { toggleHabitToday, deleteHabit, pauseHabit, setHabitColor, renameHabit, moveHabit } =
+  const { toggleHabitOnDate, deleteHabit, pauseHabit, setHabitColor, renameHabit, moveHabit } =
     useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,7 +36,7 @@ export function HabitRow({
   const color = habit.color;
 
   function handleToggle() {
-    toggleHabitToday(routineId, habit.id);
+    toggleHabitOnDate(routineId, habit.id, today);
   }
 
   function commitRename() {
@@ -257,7 +257,12 @@ export function HabitRow({
       )}
 
       {!compact && (
-        <HabitMap dates={dates} color={color} isDone={(d) => habit.completedDates.includes(d)} />
+        <HabitMap
+          dates={dates}
+          color={color}
+          isDone={(d) => habit.completedDates.includes(d)}
+          onToggle={(d) => toggleHabitOnDate(routineId, habit.id, d)}
+        />
       )}
     </div>
   );

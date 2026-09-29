@@ -35,7 +35,7 @@ interface RoutinesContextValue {
   moveHabit: (routineId: string, habitId: string, direction: "up" | "down") => void;
   pauseHabit: (routineId: string, habitId: string) => void;
   unpauseHabit: (routineId: string, habitId: string) => void;
-  toggleHabitToday: (routineId: string, habitId: string) => void;
+  toggleHabitOnDate: (routineId: string, habitId: string, date: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
   replaceAllData: (data: StoredData) => void;
   pendingUndo: PendingUndo | null;
@@ -215,8 +215,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function toggleHabitToday(routineId: string, habitId: string) {
-    const today = todayISO();
+  function toggleHabitOnDate(routineId: string, habitId: string, date: string) {
     setRoutines((prev) =>
       prev.map((r) =>
         r.id === routineId
@@ -224,12 +223,12 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
               ...r,
               habits: r.habits.map((h) => {
                 if (h.id !== habitId) return h;
-                const has = h.completedDates.includes(today);
+                const has = h.completedDates.includes(date);
                 return {
                   ...h,
                   completedDates: has
-                    ? h.completedDates.filter((d) => d !== today)
-                    : [...h.completedDates, today],
+                    ? h.completedDates.filter((d) => d !== date)
+                    : [...h.completedDates, date],
                 };
               }),
             }
@@ -291,7 +290,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         moveHabit,
         pauseHabit,
         unpauseHabit,
-        toggleHabitToday,
+        toggleHabitOnDate,
         getRoutine,
         replaceAllData,
         pendingUndo,
