@@ -1,16 +1,42 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRoutines } from "@/context/RoutinesContext";
 import { downloadBackup, parseBackupFile } from "@/lib/backup";
+
+const THEME_KEY = "habit-tracker:theme";
+type Theme = "system" | "light" | "dark";
+
+function applyTheme(theme: Theme) {
+  if (theme === "system") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+}
 
 export default function SettingsPage() {
   const router = useRouter();
   const { routines, replaceAllData } = useRoutines();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<Theme>("system");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(THEME_KEY);
+    if (stored === "light" || stored === "dark") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTheme(stored);
+    }
+  }, []);
+
+  function handleThemeChange(next: Theme) {
+    setTheme(next);
+    window.localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  }
 
   function handleExport() {
     downloadBackup({ version: 1, routines });
@@ -53,6 +79,25 @@ export default function SettingsPage() {
         &larr; Back
       </Link>
       <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+
+      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
+        <h2 className="text-sm font-semibold">Theme</h2>
+        <div className="flex w-fit rounded-full bg-foreground/5 p-1">
+          {(["system", "light", "dark"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => handleThemeChange(option)}
+              aria-pressed={theme === option}
+              className={`min-h-9 rounded-full px-3 text-xs font-medium capitalize transition-colors ${
+                theme === option ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold">Export backup</h2>
