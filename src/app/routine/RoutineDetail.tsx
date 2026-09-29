@@ -10,7 +10,7 @@ import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
 import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
-import { DEFAULT_COLOR, tintBorder } from "@/lib/colors";
+import { tintBorder } from "@/lib/colors";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
@@ -42,7 +42,7 @@ export function RoutineDetail() {
   }
 
   const dates = lastNDates(MAP_DAYS);
-  const color = routine.color ?? DEFAULT_COLOR;
+  const color = routine.color;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 p-4 pb-10 sm:p-6">

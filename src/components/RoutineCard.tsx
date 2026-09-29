@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Routine } from "@/lib/types";
-import { DEFAULT_COLOR, tintBorder } from "@/lib/colors";
+import { tintBorder } from "@/lib/colors";
 import { HabitChecklist } from "./HabitChecklist";
 
 export function RoutineCard({
@@ -11,7 +11,7 @@ export function RoutineCard({
   compact?: boolean;
 }) {
   const hasHabits = routine.habits.length > 0;
-  const color = routine.color ?? DEFAULT_COLOR;
+  const color = routine.color;
 
   return (
     <div

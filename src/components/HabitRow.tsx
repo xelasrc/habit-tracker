@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { todayISO } from "@/lib/date";
 import { lastNDates, MAP_DAYS } from "@/lib/completion";
-import { DEFAULT_COLOR } from "@/lib/colors";
 import type { Habit } from "@/lib/types";
 import { useRoutines } from "@/context/RoutinesContext";
 import { HabitMap } from "./HabitMap";
@@ -25,7 +24,7 @@ export function HabitRow({
   const today = todayISO();
   const checked = habit.completedDates.includes(today);
   const dates = lastNDates(MAP_DAYS);
-  const color = habit.color ?? DEFAULT_COLOR;
+  const color = habit.color;
 
   function handleToggle() {
     toggleHabitToday(routineId, habit.id);

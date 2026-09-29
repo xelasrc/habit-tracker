@@ -9,6 +9,7 @@ import {
 } from "react";
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
+import { createId } from "@/lib/id";
 import type { Routine } from "@/lib/types";
 
 interface RoutinesContextValue {
@@ -25,13 +26,6 @@ interface RoutinesContextValue {
 }
 
 const RoutinesContext = createContext<RoutinesContextValue | null>(null);
-
-function createId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
 
 export function RoutinesProvider({ children }: { children: ReactNode }) {
   const [routines, setRoutines] = useState<Routine[]>([]);
