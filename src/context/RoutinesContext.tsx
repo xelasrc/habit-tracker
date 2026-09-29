@@ -10,7 +10,7 @@ import {
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
 import { createId } from "@/lib/id";
-import type { HabitFrequency, Routine } from "@/lib/types";
+import type { HabitFrequency, Routine, StoredData } from "@/lib/types";
 
 interface RoutinesContextValue {
   routines: Routine[];
@@ -31,6 +31,7 @@ interface RoutinesContextValue {
   moveHabit: (routineId: string, habitId: string, direction: "up" | "down") => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
+  replaceAllData: (data: StoredData) => void;
 }
 
 const RoutinesContext = createContext<RoutinesContextValue | null>(null);
@@ -196,6 +197,12 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     return routines.find((r) => r.id === routineId);
   }
 
+  // No validation here -- callers (the backup import flow) already run the
+  // parsed file through normalizeStoredData before this is ever called.
+  function replaceAllData(data: StoredData) {
+    setRoutines(data.routines);
+  }
+
   return (
     <RoutinesContext.Provider
       value={{
@@ -213,6 +220,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         moveHabit,
         toggleHabitToday,
         getRoutine,
+        replaceAllData,
       }}
     >
       {children}
