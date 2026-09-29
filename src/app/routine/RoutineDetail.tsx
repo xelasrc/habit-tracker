@@ -15,8 +15,10 @@ import { tintBorder } from "@/lib/colors";
 export function RoutineDetail() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { getRoutine, deleteRoutine, setRoutineColor, hydrated } = useRoutines();
+  const { getRoutine, deleteRoutine, setRoutineColor, renameRoutine, hydrated } = useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [draftName, setDraftName] = useState("");
   const id = searchParams.get("id");
   const routine = id ? getRoutine(id) : undefined;
 
@@ -61,7 +63,37 @@ export function RoutineDetail() {
             className="size-4 shrink-0 rounded-full"
             aria-label="Change routine color"
           />
-          <h1 className="text-2xl font-semibold tracking-tight">{routine.name}</h1>
+          {renaming ? (
+            <input
+              autoFocus
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              onBlur={() => {
+                renameRoutine(routine.id, draftName);
+                setRenaming(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  renameRoutine(routine.id, draftName);
+                  setRenaming(false);
+                } else if (e.key === "Escape") {
+                  setRenaming(false);
+                }
+              }}
+              className="min-w-0 flex-1 rounded-lg border border-border bg-surface px-2 py-1 text-2xl font-semibold tracking-tight outline-none focus:border-accent"
+            />
+          ) : (
+            <h1
+              onClick={() => {
+                setDraftName(routine.name);
+                setRenaming(true);
+              }}
+              className="cursor-pointer text-2xl font-semibold tracking-tight"
+            >
+              {routine.name}
+            </h1>
+          )}
         </div>
         {pickerOpen && (
           <ColorSwatchPicker

@@ -68,8 +68,14 @@ export default function Home() {
         />
       ) : (
         <div className="flex flex-col gap-4">
-          {routines.map((routine) => (
-            <RoutineCard key={routine.id} routine={routine} compact={compact} />
+          {routines.map((routine, index) => (
+            <RoutineCard
+              key={routine.id}
+              routine={routine}
+              compact={compact}
+              isFirst={index === 0}
+              isLast={index === routines.length - 1}
+            />
           ))}
           <Link
             href="/routines/new"

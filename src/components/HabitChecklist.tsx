@@ -14,13 +14,15 @@ export function HabitChecklist({
 
   return (
     <div className="flex flex-col gap-2">
-      {routine.habits.map((habit) => (
+      {routine.habits.map((habit, index) => (
         <HabitRow
           key={habit.id}
           routineId={routine.id}
           habit={habit}
           showActions={showActions}
           compact={compact}
+          isFirst={index === 0}
+          isLast={index === routine.habits.length - 1}
         />
       ))}
     </div>

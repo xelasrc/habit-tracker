@@ -14,14 +14,20 @@ export function HabitRow({
   habit,
   showActions = true,
   compact = false,
+  isFirst = false,
+  isLast = false,
 }: {
   routineId: string;
   habit: Habit;
   showActions?: boolean;
   compact?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) {
-  const { toggleHabitToday, deleteHabit, setHabitColor } = useRoutines();
+  const { toggleHabitToday, deleteHabit, setHabitColor, renameHabit, moveHabit } = useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [draftName, setDraftName] = useState("");
   const today = todayISO();
   const checked = habit.completedDates.includes(today);
   const dates = lastNDates(MAP_DAYS);
@@ -29,6 +35,11 @@ export function HabitRow({
 
   function handleToggle() {
     toggleHabitToday(routineId, habit.id);
+  }
+
+  function commitRename() {
+    renameHabit(routineId, habit.id, draftName);
+    setRenaming(false);
   }
 
   return (
@@ -53,6 +64,50 @@ export function HabitRow({
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-1.5">
           {showActions && (
+            <div className="flex shrink-0 flex-col">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  moveHabit(routineId, habit.id, "up");
+                }}
+                disabled={isFirst}
+                aria-label={`Move ${habit.name} up`}
+                className="flex size-4 items-center justify-center text-foreground/40 disabled:opacity-20"
+              >
+                <svg width={10} height={10} viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M6 15l6-6 6 6"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  moveHabit(routineId, habit.id, "down");
+                }}
+                disabled={isLast}
+                aria-label={`Move ${habit.name} down`}
+                className="flex size-4 items-center justify-center text-foreground/40 disabled:opacity-20"
+              >
+                <svg width={10} height={10} viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M6 9l6 6 6-6"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+          {showActions && (
             <button
               type="button"
               onClick={(e) => {
@@ -64,7 +119,42 @@ export function HabitRow({
               aria-label={`Change color for ${habit.name}`}
             />
           )}
-          <span className="truncate font-medium">{habit.name}</span>
+          {renaming ? (
+            <input
+              autoFocus
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              onBlur={commitRename}
+              onKeyDown={(e) => {
+                // Must stop propagation: the row's own onKeyDown toggles
+                // completion on Enter/Space, which would otherwise also
+                // fire while typing into this input.
+                e.stopPropagation();
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  commitRename();
+                } else if (e.key === "Escape") {
+                  setRenaming(false);
+                }
+              }}
+              className="min-w-0 flex-1 rounded-md border border-border bg-surface px-1.5 py-0.5 font-medium outline-none focus:border-accent"
+            />
+          ) : showActions ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDraftName(habit.name);
+                setRenaming(true);
+              }}
+              className="truncate text-left font-medium"
+            >
+              {habit.name}
+            </button>
+          ) : (
+            <span className="truncate font-medium">{habit.name}</span>
+          )}
           {habit.frequency.type === "weekly" && (
             <span
               style={{ backgroundColor: tintBadge(color), color }}

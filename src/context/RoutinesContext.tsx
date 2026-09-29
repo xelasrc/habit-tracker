@@ -22,14 +22,26 @@ interface RoutinesContextValue {
   ) => string;
   deleteRoutine: (routineId: string) => void;
   setRoutineColor: (routineId: string, color: string) => void;
+  renameRoutine: (routineId: string, name: string) => void;
+  moveRoutine: (routineId: string, direction: "up" | "down") => void;
   addHabit: (routineId: string, name: string, color: string, frequency: HabitFrequency) => void;
   deleteHabit: (routineId: string, habitId: string) => void;
   setHabitColor: (routineId: string, habitId: string, color: string) => void;
+  renameHabit: (routineId: string, habitId: string, name: string) => void;
+  moveHabit: (routineId: string, habitId: string, direction: "up" | "down") => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
 }
 
 const RoutinesContext = createContext<RoutinesContextValue | null>(null);
+
+function swapAdjacent<T>(arr: T[], index: number, direction: "up" | "down"): T[] {
+  const target = direction === "up" ? index - 1 : index + 1;
+  if (target < 0 || target >= arr.length) return arr;
+  const copy = [...arr];
+  [copy[index], copy[target]] = [copy[target], copy[index]];
+  return copy;
+}
 
 export function RoutinesProvider({ children }: { children: ReactNode }) {
   const [routines, setRoutines] = useState<Routine[]>([]);
@@ -84,6 +96,20 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     setRoutines((prev) => prev.map((r) => (r.id === routineId ? { ...r, color } : r)));
   }
 
+  function renameRoutine(routineId: string, name: string) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setRoutines((prev) => prev.map((r) => (r.id === routineId ? { ...r, name: trimmed } : r)));
+  }
+
+  function moveRoutine(routineId: string, direction: "up" | "down") {
+    setRoutines((prev) => {
+      const index = prev.findIndex((r) => r.id === routineId);
+      if (index === -1) return prev;
+      return swapAdjacent(prev, index, direction);
+    });
+  }
+
   function addHabit(routineId: string, name: string, color: string, frequency: HabitFrequency) {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -117,6 +143,29 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
           ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, color } : h)) }
           : r
       )
+    );
+  }
+
+  function renameHabit(routineId: string, habitId: string, name: string) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
+          ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, name: trimmed } : h)) }
+          : r
+      )
+    );
+  }
+
+  function moveHabit(routineId: string, habitId: string, direction: "up" | "down") {
+    setRoutines((prev) =>
+      prev.map((r) => {
+        if (r.id !== routineId) return r;
+        const index = r.habits.findIndex((h) => h.id === habitId);
+        if (index === -1) return r;
+        return { ...r, habits: swapAdjacent(r.habits, index, direction) };
+      })
     );
   }
 
@@ -155,9 +204,13 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         addRoutine,
         deleteRoutine,
         setRoutineColor,
+        renameRoutine,
+        moveRoutine,
         addHabit,
         deleteHabit,
         setHabitColor,
+        renameHabit,
+        moveHabit,
         toggleHabitToday,
         getRoutine,
       }}
