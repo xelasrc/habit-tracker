@@ -1,6 +1,6 @@
 import { createId } from "./id";
 import { DEFAULT_COLOR } from "./colors";
-import type { Habit, Routine, StoredData } from "./types";
+import type { Habit, HabitFrequency, Routine, StoredData } from "./types";
 
 const STORAGE_KEY = "habit-tracker:data";
 const CURRENT_VERSION = 1 as const;
@@ -9,12 +9,21 @@ function emptyData(): StoredData {
   return { version: CURRENT_VERSION, routines: [] };
 }
 
+function normalizeFrequency(f: unknown): HabitFrequency {
+  const o = f as { type?: unknown; timesPerWeek?: unknown } | null;
+  if (o?.type === "weekly" && typeof o.timesPerWeek === "number" && o.timesPerWeek >= 1) {
+    return { type: "weekly", timesPerWeek: Math.min(6, Math.round(o.timesPerWeek)) };
+  }
+  return { type: "daily" };
+}
+
 function normalizeHabit(h: unknown): Habit {
   const o = h as Partial<Habit> & Record<string, unknown>;
   return {
     id: typeof o?.id === "string" ? o.id : createId(),
     name: typeof o?.name === "string" ? o.name : "Untitled habit",
     color: typeof o?.color === "string" ? o.color : DEFAULT_COLOR,
+    frequency: normalizeFrequency(o?.frequency),
     completedDates: Array.isArray(o?.completedDates)
       ? o.completedDates.filter((d): d is string => typeof d === "string")
       : [],

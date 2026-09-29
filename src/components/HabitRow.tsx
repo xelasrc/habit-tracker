@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { todayISO } from "@/lib/date";
-import { lastNDates, MAP_DAYS } from "@/lib/completion";
+import { lastNDates, MAP_DAYS, getWeeklyProgress } from "@/lib/completion";
+import { tintBadge } from "@/lib/colors";
 import type { Habit } from "@/lib/types";
 import { useRoutines } from "@/context/RoutinesContext";
 import { HabitMap } from "./HabitMap";
@@ -64,6 +65,14 @@ export function HabitRow({
             />
           )}
           <span className="truncate font-medium">{habit.name}</span>
+          {habit.frequency.type === "weekly" && (
+            <span
+              style={{ backgroundColor: tintBadge(color), color }}
+              className="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+            >
+              {getWeeklyProgress(habit).done}/{habit.frequency.timesPerWeek} this week
+            </span>
+          )}
           {showActions && (
             <button
               type="button"

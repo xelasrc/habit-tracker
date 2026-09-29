@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
+import type { HabitFrequency } from "@/lib/types";
 import { ColorSwatchPicker } from "./ColorSwatchPicker";
+import { FrequencyPicker } from "./FrequencyPicker";
 
 export function AddHabitForm({
   routineId,
@@ -14,14 +16,16 @@ export function AddHabitForm({
   const { addHabit } = useRoutines();
   const [name, setName] = useState("");
   const [color, setColor] = useState(defaultColor);
+  const [frequency, setFrequency] = useState<HabitFrequency>({ type: "daily" });
   const [pickerOpen, setPickerOpen] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    addHabit(routineId, name, color);
+    addHabit(routineId, name, color, frequency);
     setName("");
     setColor(defaultColor);
+    setFrequency({ type: "daily" });
     setPickerOpen(false);
   }
 
@@ -51,6 +55,7 @@ export function AddHabitForm({
         </button>
       </div>
       {pickerOpen && <ColorSwatchPicker value={color} onChange={setColor} size="sm" />}
+      <FrequencyPicker value={frequency} onChange={setFrequency} />
     </form>
   );
 }

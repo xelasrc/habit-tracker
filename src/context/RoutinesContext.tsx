@@ -10,15 +10,19 @@ import {
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
 import { createId } from "@/lib/id";
-import type { Routine } from "@/lib/types";
+import type { HabitFrequency, Routine } from "@/lib/types";
 
 interface RoutinesContextValue {
   routines: Routine[];
   hydrated: boolean;
-  addRoutine: (name: string, color: string, initialHabitNames: string[]) => string;
+  addRoutine: (
+    name: string,
+    color: string,
+    initialHabits: { name: string; frequency: HabitFrequency }[]
+  ) => string;
   deleteRoutine: (routineId: string) => void;
   setRoutineColor: (routineId: string, color: string) => void;
-  addHabit: (routineId: string, name: string, color: string) => void;
+  addHabit: (routineId: string, name: string, color: string, frequency: HabitFrequency) => void;
   deleteHabit: (routineId: string, habitId: string) => void;
   setHabitColor: (routineId: string, habitId: string, color: string) => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
@@ -46,15 +50,20 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     saveStoredData({ version: 1, routines });
   }, [routines, hydrated]);
 
-  function addRoutine(name: string, color: string, initialHabitNames: string[]): string {
+  function addRoutine(
+    name: string,
+    color: string,
+    initialHabits: { name: string; frequency: HabitFrequency }[]
+  ): string {
     const routineId = createId();
-    const habits = initialHabitNames
-      .map((n) => n.trim())
-      .filter(Boolean)
-      .map((n) => ({
+    const habits = initialHabits
+      .map((h) => ({ name: h.name.trim(), frequency: h.frequency }))
+      .filter((h) => h.name)
+      .map((h) => ({
         id: createId(),
-        name: n,
+        name: h.name,
         color,
+        frequency: h.frequency,
         completedDates: [],
       }));
     const newRoutine: Routine = {
@@ -75,7 +84,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     setRoutines((prev) => prev.map((r) => (r.id === routineId ? { ...r, color } : r)));
   }
 
-  function addHabit(routineId: string, name: string, color: string) {
+  function addHabit(routineId: string, name: string, color: string, frequency: HabitFrequency) {
     const trimmed = name.trim();
     if (!trimmed) return;
     setRoutines((prev) =>
@@ -83,7 +92,10 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         r.id === routineId
           ? {
               ...r,
-              habits: [...r.habits, { id: createId(), name: trimmed, color, completedDates: [] }],
+              habits: [
+                ...r.habits,
+                { id: createId(), name: trimmed, color, frequency, completedDates: [] },
+              ],
             }
           : r
       )

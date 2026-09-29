@@ -4,28 +4,43 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
 import { DEFAULT_COLOR } from "@/lib/colors";
+import type { HabitFrequency } from "@/lib/types";
 import { ColorSwatchPicker } from "./ColorSwatchPicker";
+import { FrequencyPicker } from "./FrequencyPicker";
 
 const inputClass =
   "min-h-11 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+
+interface HabitRowDraft {
+  name: string;
+  frequency: HabitFrequency;
+}
+
+function emptyHabitRow(): HabitRowDraft {
+  return { name: "", frequency: { type: "daily" } };
+}
 
 export function NewRoutineForm() {
   const { addRoutine } = useRoutines();
   const router = useRouter();
   const [name, setName] = useState("");
   const [color, setColor] = useState(DEFAULT_COLOR);
-  const [habitNames, setHabitNames] = useState<string[]>([""]);
+  const [habitRows, setHabitRows] = useState<HabitRowDraft[]>([emptyHabitRow()]);
 
   function updateHabitName(index: number, value: string) {
-    setHabitNames((prev) => prev.map((h, i) => (i === index ? value : h)));
+    setHabitRows((prev) => prev.map((h, i) => (i === index ? { ...h, name: value } : h)));
+  }
+
+  function updateHabitFrequency(index: number, frequency: HabitFrequency) {
+    setHabitRows((prev) => prev.map((h, i) => (i === index ? { ...h, frequency } : h)));
   }
 
   function removeHabitRow(index: number) {
-    setHabitNames((prev) => prev.filter((_, i) => i !== index));
+    setHabitRows((prev) => prev.filter((_, i) => i !== index));
   }
 
   function addHabitRow() {
-    setHabitNames((prev) => [...prev, ""]);
+    setHabitRows((prev) => [...prev, emptyHabitRow()]);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -35,7 +50,9 @@ export function NewRoutineForm() {
     const routineId = addRoutine(
       trimmedName,
       color,
-      habitNames.filter((h) => h.trim())
+      habitRows
+        .filter((h) => h.name.trim())
+        .map((h) => ({ name: h.name.trim(), frequency: h.frequency }))
     );
     router.push(`/routine?id=${routineId}`);
   }
@@ -64,33 +81,42 @@ export function NewRoutineForm() {
 
       <div className="flex flex-col gap-2">
         <span className="text-sm font-medium text-foreground/70">Habits</span>
-        <div className="flex flex-col gap-2">
-          {habitNames.map((habitName, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="text"
-                value={habitName}
-                onChange={(e) => updateHabitName(index, e.target.value)}
-                placeholder="e.g. Workout"
-                className={`flex-1 ${inputClass}`}
+        <div className="flex flex-col gap-3">
+          {habitRows.map((habitRow, index) => (
+            <div
+              key={index}
+              className="flex flex-col gap-2 rounded-lg border border-border p-2"
+            >
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={habitRow.name}
+                  onChange={(e) => updateHabitName(index, e.target.value)}
+                  placeholder="e.g. Workout"
+                  className={`flex-1 ${inputClass}`}
+                />
+                {habitRows.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeHabitRow(index)}
+                    className="flex size-11 shrink-0 items-center justify-center rounded-lg text-foreground/40 transition-colors active:bg-foreground/10 active:text-danger"
+                    aria-label="Remove habit"
+                  >
+                    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path
+                        d="M6 6l12 12M18 6L6 18"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              <FrequencyPicker
+                value={habitRow.frequency}
+                onChange={(freq) => updateHabitFrequency(index, freq)}
               />
-              {habitNames.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeHabitRow(index)}
-                  className="flex size-11 shrink-0 items-center justify-center rounded-lg text-foreground/40 transition-colors active:bg-foreground/10 active:text-danger"
-                  aria-label="Remove habit"
-                >
-                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path
-                      d="M6 6l12 12M18 6L6 18"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              )}
             </div>
           ))}
         </div>
