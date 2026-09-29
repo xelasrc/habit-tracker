@@ -20,10 +20,13 @@ export function lastNDates(n: number, referenceDate: Date = new Date()): string[
 // If a routine has no daily habits at all (rare, all-weekly), fall back to
 // requiring every habit that day as an honest "perfect day" indicator;
 // there's no streak counter to reconcile against, so this doesn't need to
-// be more sophisticated than that.
+// be more sophisticated than that. Paused habits are excluded entirely —
+// they aren't currently being tracked, so they shouldn't be able to make a
+// day (past or present) read as incomplete.
 export function isRoutineDayComplete(routine: Routine, dateISO: string): boolean {
-  const daily = routine.habits.filter((h) => h.frequency.type === "daily");
-  const toCheck = daily.length > 0 ? daily : routine.habits;
+  const active = routine.habits.filter((h) => h.pausedAt === null);
+  const daily = active.filter((h) => h.frequency.type === "daily");
+  const toCheck = daily.length > 0 ? daily : active;
   return toCheck.length > 0 && toCheck.every((h) => h.completedDates.includes(dateISO));
 }
 

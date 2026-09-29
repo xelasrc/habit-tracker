@@ -18,7 +18,7 @@ export function RoutineCard({
   isLast?: boolean;
 }) {
   const { moveRoutine } = useRoutines();
-  const hasHabits = routine.habits.length > 0;
+  const hasHabits = routine.habits.some((h) => h.pausedAt === null);
   const color = routine.color;
 
   return (

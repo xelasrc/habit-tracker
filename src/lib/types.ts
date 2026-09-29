@@ -6,6 +6,7 @@ export interface Habit {
   color: string; // hex, from lib/colors.ts PALETTE
   frequency: HabitFrequency;
   completedDates: string[]; // local "YYYY-MM-DD" dates this habit was ticked
+  pausedAt: string | null; // local "YYYY-MM-DD" it was paused, or null if active
 }
 
 export interface Routine {

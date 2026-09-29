@@ -27,6 +27,7 @@ function normalizeHabit(h: unknown): Habit {
     completedDates: Array.isArray(o?.completedDates)
       ? o.completedDates.filter((d): d is string => typeof d === "string")
       : [],
+    pausedAt: typeof o?.pausedAt === "string" ? o.pausedAt : null,
   };
 }
 

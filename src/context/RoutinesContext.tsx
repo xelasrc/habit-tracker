@@ -10,7 +10,11 @@ import {
 import { todayISO } from "@/lib/date";
 import { loadStoredData, saveStoredData } from "@/lib/storage";
 import { createId } from "@/lib/id";
-import type { HabitFrequency, Routine, StoredData } from "@/lib/types";
+import type { Habit, HabitFrequency, Routine, StoredData } from "@/lib/types";
+
+type PendingUndo =
+  | { type: "routine"; routine: Routine; index: number }
+  | { type: "habit"; routineId: string; habit: Habit; index: number };
 
 interface RoutinesContextValue {
   routines: Routine[];
@@ -29,9 +33,14 @@ interface RoutinesContextValue {
   setHabitColor: (routineId: string, habitId: string, color: string) => void;
   renameHabit: (routineId: string, habitId: string, name: string) => void;
   moveHabit: (routineId: string, habitId: string, direction: "up" | "down") => void;
+  pauseHabit: (routineId: string, habitId: string) => void;
+  unpauseHabit: (routineId: string, habitId: string) => void;
   toggleHabitToday: (routineId: string, habitId: string) => void;
   getRoutine: (routineId: string) => Routine | undefined;
   replaceAllData: (data: StoredData) => void;
+  pendingUndo: PendingUndo | null;
+  undoDelete: () => void;
+  dismissUndo: () => void;
 }
 
 const RoutinesContext = createContext<RoutinesContextValue | null>(null);
@@ -47,6 +56,13 @@ function swapAdjacent<T>(arr: T[], index: number, direction: "up" | "down"): T[]
 export function RoutinesProvider({ children }: { children: ReactNode }) {
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [pendingUndo, setPendingUndo] = useState<PendingUndo | null>(null);
+
+  useEffect(() => {
+    if (!pendingUndo) return;
+    const timer = setTimeout(() => setPendingUndo(null), 6000);
+    return () => clearTimeout(timer);
+  }, [pendingUndo]);
 
   useEffect(() => {
     // Reading localStorage (an external system) on mount, after the initial
@@ -78,6 +94,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         color,
         frequency: h.frequency,
         completedDates: [],
+        pausedAt: null,
       }));
     const newRoutine: Routine = {
       id: routineId,
@@ -90,6 +107,9 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteRoutine(routineId: string) {
+    const index = routines.findIndex((r) => r.id === routineId);
+    if (index === -1) return;
+    setPendingUndo({ type: "routine", routine: routines[index], index });
     setRoutines((prev) => prev.filter((r) => r.id !== routineId));
   }
 
@@ -121,7 +141,7 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
               ...r,
               habits: [
                 ...r.habits,
-                { id: createId(), name: trimmed, color, frequency, completedDates: [] },
+                { id: createId(), name: trimmed, color, frequency, completedDates: [], pausedAt: null },
               ],
             }
           : r
@@ -130,6 +150,10 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteHabit(routineId: string, habitId: string) {
+    const routine = routines.find((r) => r.id === routineId);
+    const index = routine?.habits.findIndex((h) => h.id === habitId) ?? -1;
+    if (!routine || index === -1) return;
+    setPendingUndo({ type: "habit", routineId, habit: routine.habits[index], index });
     setRoutines((prev) =>
       prev.map((r) =>
         r.id === routineId ? { ...r, habits: r.habits.filter((h) => h.id !== habitId) } : r
@@ -154,6 +178,27 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
       prev.map((r) =>
         r.id === routineId
           ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, name: trimmed } : h)) }
+          : r
+      )
+    );
+  }
+
+  function pauseHabit(routineId: string, habitId: string) {
+    const today = todayISO();
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
+          ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, pausedAt: today } : h)) }
+          : r
+      )
+    );
+  }
+
+  function unpauseHabit(routineId: string, habitId: string) {
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === routineId
+          ? { ...r, habits: r.habits.map((h) => (h.id === habitId ? { ...h, pausedAt: null } : h)) }
           : r
       )
     );
@@ -203,6 +248,32 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
     setRoutines(data.routines);
   }
 
+  function undoDelete() {
+    const pending = pendingUndo;
+    if (!pending) return;
+    if (pending.type === "routine") {
+      setRoutines((prev) => {
+        const copy = [...prev];
+        copy.splice(Math.min(pending.index, copy.length), 0, pending.routine);
+        return copy;
+      });
+    } else {
+      setRoutines((prev) =>
+        prev.map((r) => {
+          if (r.id !== pending.routineId) return r;
+          const copy = [...r.habits];
+          copy.splice(Math.min(pending.index, copy.length), 0, pending.habit);
+          return { ...r, habits: copy };
+        })
+      );
+    }
+    setPendingUndo(null);
+  }
+
+  function dismissUndo() {
+    setPendingUndo(null);
+  }
+
   return (
     <RoutinesContext.Provider
       value={{
@@ -218,9 +289,14 @@ export function RoutinesProvider({ children }: { children: ReactNode }) {
         setHabitColor,
         renameHabit,
         moveHabit,
+        pauseHabit,
+        unpauseHabit,
         toggleHabitToday,
         getRoutine,
         replaceAllData,
+        pendingUndo,
+        undoDelete,
+        dismissUndo,
       }}
     >
       {children}

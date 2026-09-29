@@ -10,12 +10,20 @@ import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
 import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
-import { tintBorder } from "@/lib/colors";
+import { tintBorder, tintBadge } from "@/lib/colors";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { getRoutine, deleteRoutine, setRoutineColor, renameRoutine, hydrated } = useRoutines();
+  const {
+    getRoutine,
+    deleteRoutine,
+    setRoutineColor,
+    renameRoutine,
+    unpauseHabit,
+    deleteHabit,
+    hydrated,
+  } = useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState("");
@@ -45,6 +53,8 @@ export function RoutineDetail() {
 
   const dates = lastNDates(MAP_DAYS);
   const color = routine.color;
+  const activeHabits = routine.habits.filter((h) => h.pausedAt === null);
+  const pausedHabits = routine.habits.filter((h) => h.pausedAt !== null);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 p-4 pb-10 sm:p-6">
@@ -107,7 +117,7 @@ export function RoutineDetail() {
         )}
       </div>
 
-      {routine.habits.length > 0 && (
+      {activeHabits.length > 0 && (
         <div className="flex flex-col gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
             Consistency
@@ -129,7 +139,7 @@ export function RoutineDetail() {
           className="rounded-2xl border bg-surface p-2"
           style={{ borderColor: tintBorder(color) }}
         >
-          {routine.habits.length === 0 ? (
+          {activeHabits.length === 0 ? (
             <EmptyState
               title="No habits yet"
               description="Add a habit below to get started."
@@ -142,6 +152,56 @@ export function RoutineDetail() {
         </div>
         <AddHabitForm routineId={routine.id} defaultColor={color} />
       </div>
+
+      {pausedHabits.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
+            Paused
+          </h2>
+          <div className="flex flex-col gap-2">
+            {pausedHabits.map((habit) => (
+              <div
+                key={habit.id}
+                className="flex items-center gap-2 rounded-xl bg-foreground/4 p-3"
+              >
+                <span
+                  aria-hidden
+                  style={{ backgroundColor: habit.color }}
+                  className="size-2.5 shrink-0 rounded-full opacity-50"
+                />
+                <span className="min-w-0 flex-1 truncate text-foreground/50">{habit.name}</span>
+                <button
+                  type="button"
+                  onClick={() => unpauseHabit(routine.id, habit.id)}
+                  style={{ backgroundColor: tintBadge(habit.color), color: habit.color }}
+                  className="min-h-8 shrink-0 rounded-full px-3 text-sm font-medium"
+                >
+                  Resume
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm(`Delete "${habit.name}"?`)) {
+                      deleteHabit(routine.id, habit.id);
+                    }
+                  }}
+                  aria-label={`Delete ${habit.name}`}
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full text-foreground/30 active:bg-foreground/10 active:text-danger"
+                >
+                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path
+                      d="M6 6l12 12M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <button
         type="button"

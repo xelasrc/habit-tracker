@@ -10,11 +10,12 @@ export function HabitChecklist({
   showActions?: boolean;
   compact?: boolean;
 }) {
-  if (routine.habits.length === 0) return null;
+  const activeHabits = routine.habits.filter((h) => h.pausedAt === null);
+  if (activeHabits.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-2">
-      {routine.habits.map((habit, index) => (
+      {activeHabits.map((habit, index) => (
         <HabitRow
           key={habit.id}
           routineId={routine.id}
@@ -22,7 +23,7 @@ export function HabitChecklist({
           showActions={showActions}
           compact={compact}
           isFirst={index === 0}
-          isLast={index === routine.habits.length - 1}
+          isLast={index === activeHabits.length - 1}
         />
       ))}
     </div>

@@ -24,8 +24,10 @@ export function HabitRow({
   isFirst?: boolean;
   isLast?: boolean;
 }) {
-  const { toggleHabitToday, deleteHabit, setHabitColor, renameHabit, moveHabit } = useRoutines();
+  const { toggleHabitToday, deleteHabit, pauseHabit, setHabitColor, renameHabit, moveHabit } =
+    useRoutines();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState("");
   const today = todayISO();
@@ -168,20 +170,15 @@ export function HabitRow({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                if (window.confirm(`Delete "${habit.name}"?`)) {
-                  deleteHabit(routineId, habit.id);
-                }
+                setMenuOpen((o) => !o);
               }}
-              className="flex size-6 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10 active:text-danger"
-              aria-label={`Delete ${habit.name}`}
+              className="flex size-6 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10"
+              aria-label={`More actions for ${habit.name}`}
             >
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M6 6l12 12M18 6L6 18"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="19" r="1.5" fill="currentColor" />
               </svg>
             </button>
           )}
@@ -226,6 +223,36 @@ export function HabitRow({
               setPickerOpen(false);
             }}
           />
+        </div>
+      )}
+
+      {menuOpen && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex gap-2 rounded-lg border border-border bg-surface p-1.5"
+        >
+          <button
+            type="button"
+            onClick={() => {
+              pauseHabit(routineId, habit.id);
+              setMenuOpen(false);
+            }}
+            className="min-h-8 flex-1 rounded-md px-2 text-sm font-medium text-foreground active:bg-foreground/10"
+          >
+            Pause
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm(`Delete "${habit.name}"?`)) {
+                deleteHabit(routineId, habit.id);
+              }
+              setMenuOpen(false);
+            }}
+            className="min-h-8 flex-1 rounded-md px-2 text-sm font-medium text-danger active:bg-danger/10"
+          >
+            Delete
+          </button>
         </div>
       )}
 
