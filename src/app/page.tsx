@@ -28,14 +28,14 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-4 sm:p-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Routines</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Routines</h1>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-full bg-foreground/5 p-1">
+          <div className="flex rounded-md bg-foreground/5 p-1">
             <button
               type="button"
               onClick={() => setCompact(false)}
               aria-pressed={!compact}
-              className={`min-h-9 rounded-full px-3 text-xs font-medium transition-colors ${
+              className={`min-h-9 rounded-sm px-3 text-xs font-semibold transition-colors ${
                 !compact ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
               }`}
             >
@@ -45,7 +45,7 @@ export default function Home() {
               type="button"
               onClick={() => setCompact(true)}
               aria-pressed={compact}
-              className={`min-h-9 rounded-full px-3 text-xs font-medium transition-colors ${
+              className={`min-h-9 rounded-sm px-3 text-xs font-semibold transition-colors ${
                 compact ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
               }`}
             >
@@ -55,7 +55,7 @@ export default function Home() {
           <Link
             href="/stats"
             aria-label="Stats"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50"
+            className="flex size-10 shrink-0 items-center justify-center rounded-md text-foreground/50 transition-colors active:bg-foreground/5"
           >
             <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
@@ -69,7 +69,7 @@ export default function Home() {
           <Link
             href="/settings"
             aria-label="Settings"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50"
+            className="flex size-10 shrink-0 items-center justify-center rounded-md text-foreground/50 transition-colors active:bg-foreground/5"
           >
             <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
@@ -91,7 +91,7 @@ export default function Home() {
           action={
             <Link
               href="/routines/new"
-              className="flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground shadow-sm"
+              className="flex min-h-12 items-center rounded-md bg-linear-to-br from-accent to-accent-2 px-5 text-sm font-semibold text-accent-foreground shadow-sm active:opacity-90"
             >
               Create your first routine
             </Link>
@@ -110,7 +110,7 @@ export default function Home() {
           ))}
           <Link
             href="/routines/new"
-            className="flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-accent text-sm font-medium text-accent-foreground shadow-sm"
+            className="flex min-h-12 items-center justify-center gap-1.5 rounded-md bg-linear-to-br from-accent to-accent-2 text-sm font-semibold text-accent-foreground shadow-sm active:opacity-90"
           >
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path

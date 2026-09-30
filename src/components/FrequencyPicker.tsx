@@ -11,12 +11,12 @@ export function FrequencyPicker({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div className="flex rounded-full bg-foreground/5 p-1">
+      <div className="flex rounded-md bg-foreground/5 p-1">
         <button
           type="button"
           onClick={() => onChange({ type: "daily" })}
           aria-pressed={value.type === "daily"}
-          className={`min-h-8 rounded-full px-3 text-xs font-medium transition-colors ${
+          className={`min-h-9 rounded-sm px-3 text-xs font-semibold transition-colors ${
             value.type === "daily" ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
           }`}
         >
@@ -26,7 +26,7 @@ export function FrequencyPicker({
           type="button"
           onClick={() => onChange({ type: "weekly", timesPerWeek: 3 })}
           aria-pressed={value.type === "weekly"}
-          className={`min-h-8 rounded-full px-3 text-xs font-medium transition-colors ${
+          className={`min-h-9 rounded-sm px-3 text-xs font-semibold transition-colors ${
             value.type === "weekly" ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
           }`}
         >
@@ -41,7 +41,7 @@ export function FrequencyPicker({
             onClick={() =>
               onChange({ type: "weekly", timesPerWeek: Math.max(1, value.timesPerWeek - 1) })
             }
-            className="flex size-7 items-center justify-center rounded-full bg-foreground/5 font-medium text-foreground"
+            className="flex size-9 items-center justify-center rounded-md bg-foreground/5 font-medium text-foreground active:bg-foreground/10"
             aria-label="Decrease times per week"
           >
             −
@@ -52,7 +52,7 @@ export function FrequencyPicker({
             onClick={() =>
               onChange({ type: "weekly", timesPerWeek: Math.min(6, value.timesPerWeek + 1) })
             }
-            className="flex size-7 items-center justify-center rounded-full bg-foreground/5 font-medium text-foreground"
+            className="flex size-9 items-center justify-center rounded-md bg-foreground/5 font-medium text-foreground active:bg-foreground/10"
             aria-label="Increase times per week"
           >
             +

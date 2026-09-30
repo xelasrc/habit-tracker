@@ -9,7 +9,7 @@ import { ColorSwatchPicker } from "./ColorSwatchPicker";
 import { FrequencyPicker } from "./FrequencyPicker";
 
 const inputClass =
-  "min-h-11 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+  "min-h-12 rounded-md border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 
 interface HabitRowDraft {
   name: string;
@@ -85,7 +85,7 @@ export function NewRoutineForm() {
           {habitRows.map((habitRow, index) => (
             <div
               key={index}
-              className="flex flex-col gap-2 rounded-lg border border-border p-2"
+              className="flex flex-col gap-2 rounded-md border border-border p-2"
             >
               <div className="flex gap-2">
                 <input
@@ -99,7 +99,7 @@ export function NewRoutineForm() {
                   <button
                     type="button"
                     onClick={() => removeHabitRow(index)}
-                    className="flex size-11 shrink-0 items-center justify-center rounded-lg text-foreground/40 transition-colors active:bg-foreground/10 active:text-danger"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-md text-foreground/40 transition-colors active:bg-foreground/10 active:text-danger"
                     aria-label="Remove habit"
                   >
                     <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -123,7 +123,7 @@ export function NewRoutineForm() {
         <button
           type="button"
           onClick={addHabitRow}
-          className="min-h-11 self-start text-sm font-semibold text-accent"
+          className="min-h-12 self-start text-sm font-semibold text-accent"
         >
           + Add another habit
         </button>
@@ -134,7 +134,7 @@ export function NewRoutineForm() {
 
       <button
         type="submit"
-        className="min-h-11 rounded-full bg-accent px-4 text-sm font-medium text-accent-foreground shadow-sm transition-opacity disabled:opacity-40"
+        className="min-h-12 rounded-md bg-linear-to-br from-accent to-accent-2 px-4 text-sm font-semibold text-accent-foreground shadow-sm transition-opacity disabled:opacity-40"
         disabled={!name.trim()}
       >
         Create routine

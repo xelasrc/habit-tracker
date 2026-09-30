@@ -14,12 +14,12 @@ export function UndoToast() {
 
   return (
     <div className="fixed inset-x-0 bottom-4 z-20 flex justify-center px-4">
-      <div className="flex max-w-md items-center gap-3 rounded-full bg-foreground px-4 py-2 text-background shadow-lg">
+      <div className="flex max-w-md items-center gap-2 rounded-md bg-foreground py-1.5 pr-1.5 pl-4 text-background shadow-lg">
         <span className="min-w-0 truncate text-sm">{message}</span>
         <button
           type="button"
           onClick={undoDelete}
-          className="shrink-0 text-sm font-semibold text-accent"
+          className="min-h-9 shrink-0 rounded-sm px-2 text-sm font-semibold text-accent active:bg-background/10"
         >
           Undo
         </button>
@@ -27,7 +27,7 @@ export function UndoToast() {
           type="button"
           onClick={dismissUndo}
           aria-label="Dismiss"
-          className="flex size-6 shrink-0 items-center justify-center rounded-full text-background/60"
+          className="flex size-9 shrink-0 items-center justify-center rounded-sm text-background/60 active:bg-background/10"
         >
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
             <path

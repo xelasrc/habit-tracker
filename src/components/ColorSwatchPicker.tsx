@@ -1,6 +1,6 @@
 "use client";
 
-import { PALETTE } from "@/lib/colors";
+import { PALETTE, colorGradient } from "@/lib/colors";
 
 export function ColorSwatchPicker({
   value,
@@ -11,7 +11,7 @@ export function ColorSwatchPicker({
   onChange: (color: string) => void;
   size?: "sm" | "md";
 }) {
-  const dim = size === "sm" ? "size-6" : "size-8";
+  const dim = size === "sm" ? "size-8" : "size-9";
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -22,7 +22,7 @@ export function ColorSwatchPicker({
           onClick={() => onChange(c.value)}
           aria-label={c.label}
           aria-pressed={value === c.value}
-          style={{ backgroundColor: c.value }}
+          style={{ backgroundImage: colorGradient(c.value) }}
           className={`${dim} shrink-0 rounded-full ring-offset-2 ring-offset-surface transition-transform ${
             value === c.value ? "scale-110 ring-2 ring-foreground" : ""
           }`}

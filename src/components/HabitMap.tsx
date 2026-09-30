@@ -1,3 +1,5 @@
+import { colorGradient } from "@/lib/colors";
+
 export function HabitMap({
   dates,
   isDone,
@@ -19,7 +21,7 @@ export function HabitMap({
         const className = `aspect-square rounded-xs ${done ? "" : "bg-foreground/8"} ${
           isToday ? "ring-1 ring-inset ring-foreground/50" : ""
         }`;
-        const style = done ? { backgroundColor: color } : undefined;
+        const style = done ? { backgroundImage: colorGradient(color) } : undefined;
 
         if (!onToggle) {
           return <div key={date} title={date} style={style} className={className} />;

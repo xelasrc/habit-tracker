@@ -24,3 +24,10 @@ export function tintBorder(color: string, amount = 18): string {
 export function tintBadge(color: string, amount = 18): string {
   return `color-mix(in srgb, ${color} ${amount}%, var(--surface))`;
 }
+
+// A subtle darkened-corner gradient built from a single color, used for
+// filled circular/pill elements (tick circles, chips) so they read as a
+// little richer than a flat fill without needing a second brand color.
+export function colorGradient(color: string): string {
+  return `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))`;
+}

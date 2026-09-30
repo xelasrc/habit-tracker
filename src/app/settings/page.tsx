@@ -74,22 +74,22 @@ export default function SettingsPage() {
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-4 pb-10 sm:p-6">
       <Link
         href="/"
-        className="flex min-h-11 w-fit items-center text-sm font-medium text-foreground/60"
+        className="-mx-1 flex min-h-10 w-fit items-center rounded-md px-1 text-sm font-medium text-foreground/60 active:bg-foreground/5"
       >
         &larr; Back
       </Link>
-      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
 
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
+      <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold">Theme</h2>
-        <div className="flex w-fit rounded-full bg-foreground/5 p-1">
+        <div className="flex w-fit rounded-md bg-foreground/5 p-1">
           {(["system", "light", "dark"] as const).map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => handleThemeChange(option)}
               aria-pressed={theme === option}
-              className={`min-h-9 rounded-full px-3 text-xs font-medium capitalize transition-colors ${
+              className={`min-h-9 rounded-sm px-3 text-xs font-semibold capitalize transition-colors ${
                 theme === option ? "bg-surface text-foreground shadow-sm" : "text-foreground/50"
               }`}
             >
@@ -99,7 +99,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
+      <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold">Export backup</h2>
         <p className="text-sm text-foreground/60">
           Download all your routines and habits as a JSON file you can keep somewhere safe.
@@ -107,13 +107,13 @@ export default function SettingsPage() {
         <button
           type="button"
           onClick={handleExport}
-          className="mt-1 flex min-h-11 w-fit items-center rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground shadow-sm"
+          className="mt-1 flex min-h-12 w-fit items-center rounded-md bg-linear-to-br from-accent to-accent-2 px-5 text-sm font-semibold text-accent-foreground shadow-sm active:opacity-90"
         >
           Export backup
         </button>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
+      <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold">Import backup</h2>
         <p className="text-sm text-foreground/60">
           Restore from a previously exported file. This replaces all current routines and
@@ -129,7 +129,7 @@ export default function SettingsPage() {
         <button
           type="button"
           onClick={handleImportClick}
-          className="mt-1 flex min-h-11 w-fit items-center rounded-full border border-border px-5 text-sm font-medium"
+          className="mt-1 flex min-h-12 w-fit items-center rounded-md border border-border px-5 text-sm font-semibold active:bg-foreground/5"
         >
           Import backup
         </button>

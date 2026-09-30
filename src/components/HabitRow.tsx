@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { todayISO } from "@/lib/date";
 import { lastNDates, MAP_DAYS, getWeeklyProgress } from "@/lib/completion";
-import { tintBadge } from "@/lib/colors";
+import { tintBadge, colorGradient } from "@/lib/colors";
 import type { Habit } from "@/lib/types";
 import { useRoutines } from "@/context/RoutinesContext";
 import { HabitMap } from "./HabitMap";
@@ -61,12 +61,12 @@ export function HabitRow({
       aria-label={
         checked ? `Mark ${habit.name} as not done today` : `Mark ${habit.name} as done today`
       }
-      className={`flex cursor-pointer flex-col gap-2 rounded-xl bg-foreground/4 transition-colors active:bg-foreground/8 ${
+      className={`flex cursor-pointer flex-col gap-2 rounded-lg bg-foreground/4 transition-colors active:bg-foreground/8 ${
         compact ? "p-2.5" : "p-3"
       }`}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1">
           {showActions && editMode && (
             <div className="flex shrink-0 flex-col">
               <button
@@ -77,9 +77,9 @@ export function HabitRow({
                 }}
                 disabled={isFirst}
                 aria-label={`Move ${habit.name} up`}
-                className="flex size-4 items-center justify-center text-foreground/40 disabled:opacity-20"
+                className="flex size-7 items-center justify-center rounded-md text-foreground/40 transition-colors active:bg-foreground/5 disabled:opacity-20"
               >
-                <svg width={10} height={10} viewBox="0 0 24 24" fill="none" aria-hidden>
+                <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path
                     d="M6 15l6-6 6 6"
                     stroke="currentColor"
@@ -97,9 +97,9 @@ export function HabitRow({
                 }}
                 disabled={isLast}
                 aria-label={`Move ${habit.name} down`}
-                className="flex size-4 items-center justify-center text-foreground/40 disabled:opacity-20"
+                className="flex size-7 items-center justify-center rounded-md text-foreground/40 transition-colors active:bg-foreground/5 disabled:opacity-20"
               >
-                <svg width={10} height={10} viewBox="0 0 24 24" fill="none" aria-hidden>
+                <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path
                     d="M6 9l6 6 6-6"
                     stroke="currentColor"
@@ -118,10 +118,15 @@ export function HabitRow({
                 e.stopPropagation();
                 setPickerOpen((o) => !o);
               }}
-              style={{ backgroundColor: color }}
-              className="size-3.5 shrink-0 rounded-full"
               aria-label={`Change color for ${habit.name}`}
-            />
+              className="flex size-8 shrink-0 items-center justify-center rounded-md active:bg-foreground/5"
+            >
+              <span
+                aria-hidden
+                style={{ backgroundImage: colorGradient(color) }}
+                className="size-3.5 rounded-full"
+              />
+            </button>
           )}
           {renaming ? (
             <input
@@ -152,17 +157,17 @@ export function HabitRow({
                 setDraftName(habit.name);
                 setRenaming(true);
               }}
-              className="truncate text-left font-medium"
+              className="min-h-8 truncate rounded-md px-1 text-left font-medium active:bg-foreground/5"
             >
               {habit.name}
             </button>
           ) : (
-            <span className="truncate font-medium">{habit.name}</span>
+            <span className="truncate px-1 font-medium">{habit.name}</span>
           )}
           {habit.frequency.type === "weekly" && (
             <span
               style={{ backgroundColor: tintBadge(color), color }}
-              className="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+              className="shrink-0 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold"
             >
               {getWeeklyProgress(habit).done}/{habit.frequency.timesPerWeek} this week
             </span>
@@ -174,7 +179,7 @@ export function HabitRow({
                 e.stopPropagation();
                 setMenuOpen((o) => !o);
               }}
-              className="flex size-6 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors active:bg-foreground/10"
+              className="flex size-8 shrink-0 items-center justify-center rounded-md text-foreground/30 transition-colors active:bg-foreground/10"
               aria-label={`More actions for ${habit.name}`}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -187,14 +192,14 @@ export function HabitRow({
         </div>
         <div
           aria-hidden
-          style={{
-            borderColor: color,
-            backgroundColor: checked ? color : "transparent",
-            color: checked ? "#fff" : color,
-          }}
-          className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors"
+          style={
+            checked
+              ? { backgroundImage: colorGradient(color), borderColor: color, color: "#fff" }
+              : { backgroundColor: "transparent", borderColor: color, color }
+          }
+          className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors"
         >
-          <svg width={11} height={11} viewBox="0 0 24 24" fill="none">
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none">
             {checked ? (
               <path
                 d="M5 13l4 4L19 7"
@@ -231,7 +236,7 @@ export function HabitRow({
       {menuOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex gap-2 rounded-lg border border-border bg-surface p-1.5"
+          className="flex gap-2 rounded-md border border-border bg-surface p-1.5"
         >
           <button
             type="button"
@@ -239,7 +244,7 @@ export function HabitRow({
               pauseHabit(routineId, habit.id);
               setMenuOpen(false);
             }}
-            className="min-h-8 flex-1 rounded-md px-2 text-sm font-medium text-foreground active:bg-foreground/10"
+            className="min-h-9 flex-1 rounded-sm px-2 text-sm font-medium text-foreground active:bg-foreground/10"
           >
             Pause
           </button>
@@ -251,7 +256,7 @@ export function HabitRow({
               }
               setMenuOpen(false);
             }}
-            className="min-h-8 flex-1 rounded-md px-2 text-sm font-medium text-danger active:bg-danger/10"
+            className="min-h-9 flex-1 rounded-sm px-2 text-sm font-medium text-danger active:bg-danger/10"
           >
             Delete
           </button>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRoutines } from "@/context/RoutinesContext";
 import { EmptyState } from "@/components/EmptyState";
 import { ticksInWindow, currentStreak, longestStreak, routineCompletionCount } from "@/lib/stats";
-import { tintBorder, tintBadge } from "@/lib/colors";
+import { tintBorder, tintBadge, colorGradient } from "@/lib/colors";
 
 const WINDOW_DAYS = 30;
 
@@ -15,11 +15,11 @@ export default function StatsPage() {
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-4 pb-10 sm:p-6">
       <Link
         href="/"
-        className="flex min-h-11 w-fit items-center text-sm font-medium text-foreground/60"
+        className="-mx-1 flex min-h-10 w-fit items-center rounded-md px-1 text-sm font-medium text-foreground/60 active:bg-foreground/5"
       >
         &larr; Back
       </Link>
-      <h1 className="text-2xl font-semibold tracking-tight">Stats</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Stats</h1>
 
       {!hydrated ? null : routines.length === 0 ? (
         <EmptyState
@@ -34,21 +34,21 @@ export default function StatsPage() {
             return (
               <div
                 key={routine.id}
-                className="flex flex-col gap-3 rounded-2xl border bg-surface p-4"
+                className="flex flex-col gap-3 rounded-lg border bg-surface p-4"
                 style={{ borderColor: tintBorder(routine.color) }}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2">
                     <span
                       aria-hidden
-                      style={{ backgroundColor: routine.color }}
+                      style={{ backgroundImage: colorGradient(routine.color) }}
                       className="size-2.5 shrink-0 rounded-full"
                     />
                     <span className="truncate text-base font-semibold">{routine.name}</span>
                   </div>
                   <span
                     style={{ backgroundColor: tintBadge(routine.color), color: routine.color }}
-                    className="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold"
+                    className="shrink-0 rounded-sm px-2 py-0.5 text-xs font-semibold"
                   >
                     {routineDays}/{WINDOW_DAYS} full days
                   </span>

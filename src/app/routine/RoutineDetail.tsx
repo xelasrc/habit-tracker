@@ -10,7 +10,7 @@ import { AddHabitForm } from "@/components/AddHabitForm";
 import { EmptyState } from "@/components/EmptyState";
 import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 import { lastNDates, MAP_DAYS, isRoutineDayComplete } from "@/lib/completion";
-import { tintBorder, tintBadge } from "@/lib/colors";
+import { tintBorder, tintBadge, colorGradient } from "@/lib/colors";
 
 export function RoutineDetail() {
   const searchParams = useSearchParams();
@@ -42,7 +42,7 @@ export function RoutineDetail() {
           action={
             <Link
               href="/"
-              className="flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground shadow-sm"
+              className="flex min-h-12 items-center rounded-md bg-linear-to-br from-accent to-accent-2 px-5 text-sm font-semibold text-accent-foreground shadow-sm"
             >
               Back to home
             </Link>
@@ -62,18 +62,23 @@ export function RoutineDetail() {
       <div className="flex flex-col gap-2">
         <Link
           href="/"
-          className="flex min-h-11 w-fit items-center text-sm font-medium text-foreground/60"
+          className="-mx-1 flex min-h-10 w-fit items-center rounded-md px-1 text-sm font-medium text-foreground/60 active:bg-foreground/5"
         >
           &larr; Back
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setPickerOpen((o) => !o)}
-            style={{ backgroundColor: color }}
-            className="size-4 shrink-0 rounded-full"
             aria-label="Change routine color"
-          />
+            className="flex size-9 shrink-0 items-center justify-center rounded-md active:bg-foreground/5"
+          >
+            <span
+              aria-hidden
+              style={{ backgroundImage: colorGradient(color) }}
+              className="size-4 rounded-full"
+            />
+          </button>
           {renaming ? (
             <input
               autoFocus
@@ -92,7 +97,7 @@ export function RoutineDetail() {
                   setRenaming(false);
                 }
               }}
-              className="min-w-0 flex-1 rounded-lg border border-border bg-surface px-2 py-1 text-2xl font-semibold tracking-tight outline-none focus:border-accent"
+              className="min-w-0 flex-1 rounded-md border border-border bg-surface px-2 py-1 text-2xl font-bold tracking-tight outline-none focus:border-accent"
             />
           ) : (
             <h1
@@ -100,7 +105,7 @@ export function RoutineDetail() {
                 setDraftName(routine.name);
                 setRenaming(true);
               }}
-              className="cursor-pointer text-2xl font-semibold tracking-tight"
+              className="-mx-1 min-h-9 cursor-pointer rounded-md px-1 text-2xl font-bold tracking-tight active:bg-foreground/5"
             >
               {routine.name}
             </h1>
@@ -124,7 +129,7 @@ export function RoutineDetail() {
             Consistency
           </h2>
           <div
-            className="rounded-2xl border bg-surface p-4"
+            className="rounded-lg border bg-surface p-4"
             style={{ borderColor: tintBorder(color) }}
           >
             <HabitMap dates={dates} color={color} isDone={(d) => isRoutineDayComplete(routine, d)} />
@@ -142,8 +147,10 @@ export function RoutineDetail() {
               type="button"
               onClick={() => setEditMode((o) => !o)}
               aria-pressed={editMode}
-              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
-                editMode ? "bg-accent text-accent-foreground" : "text-foreground/50"
+              className={`flex min-h-8 items-center gap-1 rounded-md px-2.5 text-xs font-semibold transition-colors ${
+                editMode
+                  ? "bg-linear-to-br from-accent to-accent-2 text-accent-foreground"
+                  : "text-foreground/50 active:bg-foreground/5"
               }`}
             >
               {editMode ? (
@@ -166,7 +173,7 @@ export function RoutineDetail() {
           )}
         </div>
         <div
-          className="rounded-2xl border bg-surface p-2"
+          className="rounded-lg border bg-surface p-2"
           style={{ borderColor: tintBorder(color) }}
         >
           {activeHabits.length === 0 ? (
@@ -192,7 +199,7 @@ export function RoutineDetail() {
             {pausedHabits.map((habit) => (
               <div
                 key={habit.id}
-                className="flex items-center gap-2 rounded-xl bg-foreground/4 p-3"
+                className="flex items-center gap-2 rounded-lg bg-foreground/4 p-3"
               >
                 <span
                   aria-hidden
@@ -204,7 +211,7 @@ export function RoutineDetail() {
                   type="button"
                   onClick={() => unpauseHabit(routine.id, habit.id)}
                   style={{ backgroundColor: tintBadge(habit.color), color: habit.color }}
-                  className="min-h-8 shrink-0 rounded-full px-3 text-sm font-medium"
+                  className="min-h-9 shrink-0 rounded-md px-3 text-sm font-medium"
                 >
                   Resume
                 </button>
@@ -216,7 +223,7 @@ export function RoutineDetail() {
                     }
                   }}
                   aria-label={`Delete ${habit.name}`}
-                  className="flex size-8 shrink-0 items-center justify-center rounded-full text-foreground/30 active:bg-foreground/10 active:text-danger"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-md text-foreground/30 active:bg-foreground/10 active:text-danger"
                 >
                   <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
                     <path
@@ -241,7 +248,7 @@ export function RoutineDetail() {
             router.push("/");
           }
         }}
-        className="min-h-11 self-start text-sm font-medium text-danger"
+        className="min-h-12 self-start rounded-md px-1 text-sm font-medium text-danger active:bg-danger/10"
       >
         Delete routine
       </button>

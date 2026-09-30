@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRoutines } from "@/context/RoutinesContext";
+import { colorGradient } from "@/lib/colors";
 import type { HabitFrequency } from "@/lib/types";
 import { ColorSwatchPicker } from "./ColorSwatchPicker";
 import { FrequencyPicker } from "./FrequencyPicker";
@@ -35,8 +36,8 @@ export function AddHabitForm({
         <button
           type="button"
           onClick={() => setPickerOpen((o) => !o)}
-          style={{ backgroundColor: color }}
-          className="size-11 shrink-0 rounded-lg"
+          style={{ backgroundImage: colorGradient(color) }}
+          className="size-12 shrink-0 rounded-md"
           aria-label="Choose habit color"
         />
         <input
@@ -44,11 +45,11 @@ export function AddHabitForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Add a habit"
-          className="min-h-11 flex-1 rounded-lg border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+          className="min-h-12 flex-1 rounded-md border border-border bg-surface px-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
         />
         <button
           type="submit"
-          className="min-h-11 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity disabled:opacity-40"
+          className="min-h-12 rounded-md bg-linear-to-br from-accent to-accent-2 px-4 text-sm font-semibold text-accent-foreground transition-opacity disabled:opacity-40"
           disabled={!name.trim()}
         >
           Add

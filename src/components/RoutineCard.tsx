@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRoutines } from "@/context/RoutinesContext";
 import type { Routine } from "@/lib/types";
-import { tintBorder } from "@/lib/colors";
+import { tintBorder, colorGradient } from "@/lib/colors";
 import { HabitChecklist } from "./HabitChecklist";
 
 export function RoutineCard({
@@ -23,19 +23,19 @@ export function RoutineCard({
 
   return (
     <div
-      className="rounded-2xl border bg-surface p-4 shadow-sm"
+      className="rounded-lg border bg-surface p-4 shadow-sm"
       style={{ borderColor: tintBorder(color) }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <Link
           href={`/routine?id=${routine.id}`}
-          className="-m-1 flex min-w-0 flex-1 items-center justify-between gap-3 rounded-lg p-1 transition-colors active:bg-foreground/5 sm:hover:bg-foreground/5"
+          className="-m-1 flex min-w-0 flex-1 items-center justify-between gap-3 rounded-md p-1 transition-colors active:bg-foreground/5 sm:hover:bg-foreground/5"
         >
           <span className="flex min-w-0 items-center gap-2">
             <span
               aria-hidden
-              style={{ backgroundColor: color }}
-              className="size-2.5 shrink-0 rounded-full"
+              style={{ backgroundImage: colorGradient(color) }}
+              className="size-3 shrink-0 rounded-full"
             />
             <span className="truncate text-base font-semibold">{routine.name}</span>
           </span>
@@ -63,9 +63,9 @@ export function RoutineCard({
             onClick={() => moveRoutine(routine.id, "up")}
             disabled={isFirst}
             aria-label="Move routine up"
-            className="flex size-6 items-center justify-center text-foreground/40 disabled:opacity-20"
+            className="flex size-8 items-center justify-center rounded-md text-foreground/40 transition-colors active:bg-foreground/5 disabled:opacity-20"
           >
-            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
+            <svg width={13} height={13} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M6 15l6-6 6 6"
                 stroke="currentColor"
@@ -80,9 +80,9 @@ export function RoutineCard({
             onClick={() => moveRoutine(routine.id, "down")}
             disabled={isLast}
             aria-label="Move routine down"
-            className="flex size-6 items-center justify-center text-foreground/40 disabled:opacity-20"
+            className="flex size-8 items-center justify-center rounded-md text-foreground/40 transition-colors active:bg-foreground/5 disabled:opacity-20"
           >
-            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
+            <svg width={13} height={13} viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M6 9l6 6 6-6"
                 stroke="currentColor"
