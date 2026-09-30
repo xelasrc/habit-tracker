@@ -14,6 +14,7 @@ export function HabitRow({
   habit,
   showActions = true,
   compact = false,
+  editMode = false,
   isFirst = false,
   isLast = false,
 }: {
@@ -21,6 +22,7 @@ export function HabitRow({
   habit: Habit;
   showActions?: boolean;
   compact?: boolean;
+  editMode?: boolean;
   isFirst?: boolean;
   isLast?: boolean;
 }) {
@@ -65,7 +67,7 @@ export function HabitRow({
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-1.5">
-          {showActions && (
+          {showActions && editMode && (
             <div className="flex shrink-0 flex-col">
               <button
                 type="button"
@@ -261,7 +263,7 @@ export function HabitRow({
           dates={dates}
           color={color}
           isDone={(d) => habit.completedDates.includes(d)}
-          onToggle={(d) => toggleHabitOnDate(routineId, habit.id, d)}
+          onToggle={editMode ? (d) => toggleHabitOnDate(routineId, habit.id, d) : undefined}
         />
       )}
     </div>

@@ -5,10 +5,12 @@ export function HabitChecklist({
   routine,
   showActions = true,
   compact = false,
+  editMode = false,
 }: {
   routine: Routine;
   showActions?: boolean;
   compact?: boolean;
+  editMode?: boolean;
 }) {
   const activeHabits = routine.habits.filter((h) => h.pausedAt === null);
   if (activeHabits.length === 0) return null;
@@ -22,6 +24,7 @@ export function HabitChecklist({
           habit={habit}
           showActions={showActions}
           compact={compact}
+          editMode={editMode}
           isFirst={index === 0}
           isLast={index === activeHabits.length - 1}
         />

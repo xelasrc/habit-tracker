@@ -27,6 +27,7 @@ export function RoutineDetail() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState("");
+  const [editMode, setEditMode] = useState(false);
   const id = searchParams.get("id");
   const routine = id ? getRoutine(id) : undefined;
 
@@ -132,9 +133,38 @@ export function RoutineDetail() {
       )}
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
-          Habits
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
+            Habits
+          </h2>
+          {activeHabits.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setEditMode((o) => !o)}
+              aria-pressed={editMode}
+              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+                editMode ? "bg-accent text-accent-foreground" : "text-foreground/50"
+              }`}
+            >
+              {editMode ? (
+                "Done"
+              ) : (
+                <>
+                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path
+                      d="M4 20l1-4.5L15.5 5 19 8.5 8.5 19 4 20Z"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Edit
+                </>
+              )}
+            </button>
+          )}
+        </div>
         <div
           className="rounded-2xl border bg-surface p-2"
           style={{ borderColor: tintBorder(color) }}
@@ -146,7 +176,7 @@ export function RoutineDetail() {
             />
           ) : (
             <div className="px-2">
-              <HabitChecklist routine={routine} />
+              <HabitChecklist routine={routine} editMode={editMode} />
             </div>
           )}
         </div>
